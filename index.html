@@ -100,6 +100,61 @@ main{flex:1;overflow-y:auto;padding:12px 16px var(--safe-bottom)}
 .upgrade-dot{width:12px;height:12px;border-radius:50%;background:var(--bg3)}
 .upgrade-dot.done{background:var(--green)}
 .upgrade-dot.today{background:var(--accent2);animation:pulse 1.5s infinite}
+
+/* View toggle */
+.view-toggle{display:flex;gap:0;margin-bottom:12px;border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--bg3)}
+.view-toggle-btn{flex:1;padding:10px;border:none;font-size:14px;font-weight:500;cursor:pointer;background:var(--bg3);color:var(--text2);transition:all 0.2s}
+.view-toggle-btn.active{background:var(--accent);color:#fff}
+.view-toggle-btn:not(.active):hover{background:var(--bg2)}
+
+/* Stats view */
+.stats-view{padding-bottom:20px}
+.stats-heatmap{background:var(--bg2);border-radius:var(--radius);padding:16px;margin-bottom:12px}
+.stats-heatmap h3{font-size:14px;font-weight:600;color:var(--text2);margin-bottom:8px}
+.heatmap-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;max-width:280px;margin:0 auto}
+.heatmap-cell{aspect-ratio:1;border-radius:3px;min-height:8px;background:var(--bg3);transition:all 0.2s;position:relative}
+.heatmap-cell.l1{background:rgba(60,207,122,0.25)}
+.heatmap-cell.l2{background:rgba(60,207,122,0.5)}
+.heatmap-cell.l3{background:rgba(60,207,122,0.75)}
+.heatmap-cell.l4{background:var(--green)}
+.heatmap-cell.today{border:1.5px solid var(--accent2)}
+.heatmap-label{font-size:10px;color:var(--text3);text-align:center;margin-bottom:4px}
+.heatmap-legend{display:flex;gap:4px;align-items:center;justify-content:center;margin-top:8px;font-size:11px;color:var(--text3)}
+.heatmap-legend .cell{width:12px;height:12px;border-radius:2px;background:var(--bg3)}
+.heatmap-legend .cell.l2{background:rgba(60,207,122,0.5)}
+.heatmap-legend .cell.l4{background:var(--green)}
+.heatmap-month{font-size:11px;color:var(--text3);margin-top:6px}
+.heatmap-nav{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:8px}
+.heatmap-nav button{background:var(--bg3);border:none;color:var(--text2);width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+.heatmap-nav button:active{background:var(--accent);color:#fff}
+.heatmap-nav span{font-size:14px;font-weight:500;color:var(--text);min-width:80px;text-align:center}
+
+/* Stats cards */
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px}
+.stats-card{background:var(--bg2);border-radius:var(--radius-sm);padding:14px;text-align:center}
+.stats-card .num{font-size:24px;font-weight:700;color:var(--text)}
+.stats-card .lbl{font-size:12px;color:var(--text3);margin-top:2px}
+.stats-card .sub{font-size:11px;color:var(--text3);margin-top:4px}
+.stats-card.highlight{border:1px solid var(--accent)}
+.stats-card .num.green{color:var(--green)}
+.stats-card .num.accent{color:var(--accent2)}
+.stats-card .num.orange{color:var(--orange)}
+
+/* Level progress bars */
+.level-progress-bar{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;margin:4px 0}
+.level-progress-fill{height:100%;border-radius:3px;background:var(--accent);transition:width 0.5s;width:0%}
+.level-progress-fill.complete{background:var(--green)}
+
+/* Training log */
+.log-list{background:var(--bg2);border-radius:var(--radius);padding:12px;margin-bottom:12px;max-height:300px;overflow-y:auto}
+.log-item{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.03)}
+.log-item:last-child{border-bottom:none}
+.log-item .left{display:flex;flex-direction:column}
+.log-item .date{font-size:12px;color:var(--text3)}
+.log-item .stage-name{font-size:13px;color:var(--text)}
+.log-item .time{font-size:11px;color:var(--text3)}
+.log-item .badge{font-size:11px;padding:2px 8px;border-radius:8px;background:var(--accent-dim);color:var(--accent2);flex-shrink:0}
+.log-empty{text-align:center;padding:24px;color:var(--text3);font-size:14px}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
 </style>
 </head>
@@ -115,6 +170,32 @@ main{flex:1;overflow-y:auto;padding:12px 16px var(--safe-bottom)}
   <div id="exerciseArea"></div>
   <div class="upgrade-panel" id="upgradePanel"></div>
 
+
+<div class="view-toggle" id="viewToggle">
+  <button class="view-toggle-btn active" data-view="train" onclick="switchView('train')">??</button>
+  <button class="view-toggle-btn" data-view="stats" onclick="switchView('stats')">??</button>
+</div>
+<div id="statsView" class="stats-view hidden">
+  <div class="stats-heatmap">
+    <div class="heatmap-nav">
+      <button onclick="heatmapMonth(-1)">&#9664;</button>
+      <span id="heatmapMonthLabel"></span>
+      <button onclick="heatmapMonth(1)">&#9654;</button>
+    </div>
+    <div class="heatmap-grid" id="heatmapGrid"></div>
+    <div class="heatmap-legend">
+      <span>?</span>
+      <div class="cell"></div>
+      <div class="cell l2"></div>
+      <div class="cell l4"></div>
+      <span>?</span>
+    </div>
+  </div>
+  <div class="stats-grid" id="statsGrid"></div>
+  <div id="levelProgressCards"></div>
+  <h3 style="font-size:14px;font-weight:600;color:var(--text2);margin-bottom:8px">????</h3>
+  <div class="log-list" id="trainingLog"></div>
+</div>
 <div id="dailyPlan" class="daily-plan" onclick="goToRecommended()"></div>
 <div id="progressLevels" class="progress-levels"></div>
 <div class="modal-overlay" id="settingsModal" onclick="if(event.target===this)closeSettings()">
@@ -316,17 +397,18 @@ const DATA = {
   }
 };
 
-let state = {level:0,stage:"0.1",exerciseIdx:0,reps:0,completed:{},dailyGoal:2,todaySessions:0,sessionDate:""};
+let state = {level:0,stage:"0.1",exerciseIdx:0,reps:0,completed:{},dailyGoal:2,todaySessions:0,sessionDate:"",trainingLog:[]};
 
 function loadState(){
   try{const s=localStorage.getItem("pelvic_state");
     if(s){const p=JSON.parse(s);Object.assign(state,p)}if(!state.dailyGoal)state.dailyGoal=2
 if(!state.sessionDate)state.sessionDate=""
+if(!state.trainingLog)state.trainingLog=[]
   }catch(e){}
 }
 function saveState(){
   localStorage.setItem("pelvic_state",JSON.stringify({
-    level:state.level,stage:state.stage,completed:state.completed,dailyGoal:state.dailyGoal,todaySessions:state.todaySessions,sessionDate:state.sessionDate
+    level:state.level,stage:state.stage,completed:state.completed,dailyGoal:state.dailyGoal,todaySessions:state.todaySessions,sessionDate:state.sessionDate,trainingLog:state.trainingLog
   }));
 }
 
@@ -498,6 +580,8 @@ function bindEvents(stageId,totalEx,stageData){
       const c=state.completed[stageId];
       c.done=true;c.totalSessions=(c.totalSessions||0)+1;c.lastDate=new Date().toDateString();
       var td=new Date().toDateString();if(state.sessionDate!==td){state.sessionDate=td;state.todaySessions=0}state.todaySessions++;
+      state.trainingLog.push({date:td,time:new Date().toLocaleTimeString(),level:state.level,stage:stageId,stageName:DATA[String(state.level)].stages[stageId].name});
+      if(state.trainingLog.length>500)state.trainingLog=state.trainingLog.slice(-500);
       const stages=Object.keys(DATA[String(state.level)].stages);
       const idx=stages.indexOf(stageId);
       if(idx<stages.length-1){state.stage=stages[idx+1];state.exerciseIdx=0;}
@@ -657,6 +741,81 @@ function updateSettingStages() {
     html += '<option value="' + s + '"' + selAttr + ">" + s + " -- " + DATA[String(lv)].stages[s].name + "</option>";
   }
   sel.innerHTML = html;
+}
+
+function switchView(v) {
+  currentView = v;
+  document.querySelectorAll(".view-toggle-btn").forEach(function(b) {
+    b.classList.toggle("active", b.dataset.view === v);
+  });
+  document.getElementById("statsView").classList.toggle("hidden", v !== "stats");
+  document.getElementById("dailyPlan").classList.toggle("hidden", v === "stats");
+  document.getElementById("stageBar").classList.toggle("hidden", v === "stats");
+  document.getElementById("sessionStats").classList.toggle("hidden", v === "stats");
+  document.getElementById("stageDesc").classList.toggle("hidden", v === "stats");
+  document.getElementById("exerciseArea").classList.toggle("hidden", v === "stats");
+  document.getElementById("upgradePanel").classList.toggle("hidden", v === "stats");
+  document.getElementById("progressLevels").classList.toggle("hidden", v === "stats");
+  if (v === "stats") renderStatsView();
+}
+var heatmapOffset = 0;
+function renderStatsView() { renderHeatmap(); renderStatsCards(); renderLevelProgressBars(); renderTrainingLog(); }
+function getDaysInMonth(y,m){return new Date(y,m+1,0).getDate()}
+function getFirstDayOfMonth(y,m){return new Date(y,m,1).getDay()}
+function renderHeatmap() {
+  var now=new Date(),y=now.getFullYear(),m=now.getMonth()+heatmapOffset;
+  while(m<0){m+=12;y--}while(m>11){m-=12;y++}
+  var months=["1\u6708","2\u6708","3\u6708","4\u6708","5\u6708","6\u6708","7\u6708","8\u6708","9\u6708","10\u6708","11\u6708","12\u6708"];
+  document.getElementById("heatmapMonthLabel").textContent=y+"\u5e74 "+months[m];
+  var dim=getDaysInMonth(y,m),fd=getFirstDayOfMonth(y,m),grid=document.getElementById("heatmapGrid");
+  var html="",dow=["\u65e5","\u4e00","\u4e8c","\u4e09","\u56db","\u4e94","\u516d"];
+  for(var i=0;i<7;i++)html+='<div class="heatmap-label">'+dow[i]+"</div>";
+  for(var i=0;i<fd;i++)html+="<div></div>";
+  var ts=now.toDateString(),isCM=(heatmapOffset===0);
+  var dc={};for(var li=0;li<state.trainingLog.length;li++){var d=state.trainingLog[li].date;if(dc[d]===undefined)dc[d]=0;dc[d]++;}
+  for(var day=1;day<=dim;day++){
+    var dobj=new Date(y,m,day),ds=dobj.toDateString(),cnt=dc[ds]||0,cls="heatmap-cell";
+    if(cnt>0){if(cnt<=1)cls+=" l1";else if(cnt<=2)cls+=" l2";else if(cnt<=3)cls+=" l3";else cls+=" l4"}
+    if(isCM&&ds===ts)cls+=" today";
+    html+='<div class="'+cls+'" title="'+(y+"/"+(m+1)+"/"+day)+": "+cnt+"\u6b21\u8bad\u7ec3"+'"></div>';
+  }
+  grid.innerHTML=html;
+}
+function heatmapMonth(delta){heatmapOffset+=delta;renderHeatmap()}
+function renderStatsCards(){
+  var total=state.trainingLog.length,ud={};
+  for(var i=0;i<state.trainingLog.length;i++)ud[state.trainingLog[i].date]=true;
+  var dt=Object.keys(ud).length,streak=calcStreak(),today=new Date().toDateString(),tc=0;
+  for(var i=0;i<state.trainingLog.length;i++)if(state.trainingLog[i].date===today)tc++;
+  var ws=0;var d=new Date();
+  for(var i=0;i<7;i++){var ds=d.toDateString();for(var li=0;li<state.trainingLog.length;li++){if(state.trainingLog[li].date===ds){ws++;break}}d.setDate(d.getDate()-1)}
+  document.getElementById("statsGrid").innerHTML=
+    '<div class="stats-card highlight"><div class="num accent">'+total+'</div><div class="lbl">\u7ecf\u8bad\u7ec3\u6b21\u6570</div></div>'+
+    '<div class="stats-card"><div class="num green">'+streak+'</div><div class="lbl">\u8fde\u7eed\u5929\u6570</div><div class="sub">\u5f53\u524d</div></div>'+
+    '<div class="stats-card"><div class="num">'+dt+'</div><div class="lbl">\u8bad\u7ec3\u5929\u6570</div><div class="sub">\u7d2f\u8ba1</div></div>'+
+    '<div class="stats-card"><div class="num orange">'+ws+'/7</div><div class="lbl">\u672c\u5468\u8bad\u7ec3</div><div class="sub">'+Math.round(ws/7*100)+'%</div></div>';
+}
+function renderLevelProgressBars(){
+  var el=document.getElementById("levelProgressCards");if(!el)return;
+  var html='<div class="stats-grid">';
+  for(var lv=0;lv<=2;lv++){
+    var stages=Object.keys(DATA[String(lv)].stages),done=0;
+    for(var si=0;si<stages.length;si++){var sc=state.completed[stages[si]];if(sc&&sc.done)done++}
+    var pct=Math.round(done/stages.length*100);
+    html+='<div class="stats-card"><div class="num '+(pct>=100?"green":"")+'">'+done+"/"+stages.length+'</div>'+
+      '<div class="lbl">\u7b49\u7ea7'+lv+'</div>'+
+      '<div class="level-progress-bar"><div class="level-progress-fill '+(pct>=100?"complete":"")+'" style="width:'+pct+'%"></div></div>'+
+      '<div class="sub">'+pct+'%</div></div>';
+  }
+  el.innerHTML=html+'</div>';
+}
+function renderTrainingLog(){
+  var el=document.getElementById("trainingLog");if(!el)return;
+  if(state.trainingLog.length===0){el.innerHTML='<div class="log-empty">\u8fd8\u6ca1\u6709\u8bad\u7ec3\u8bb0\u5f55\n\u5b8c\u6210\u4e00\u6b21\u8bad\u7ec3\u540e\u4f1a\u51fa\u73b0\u5728\u8fd9\u91cc</div>';return}
+  var entries=state.trainingLog.slice(-50).reverse(),html="";
+  for(var i=0;i<entries.length;i++){var e=entries[i];
+    html+='<div class="log-item"><div class="left"><span class="date">'+e.date+" "+e.time+'</span><span class="stage-name">'+e.stageName+'</span></div><div class="badge">\u7b49\u7ea7'+e.level+'</div></div>'}
+  el.innerHTML=html;
 }
 function onDailyGoalChange(){
   var val=parseInt(document.getElementById("settingDailyGoal").value);
