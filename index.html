@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#6c6cf0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>盆底肌训练助手</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0f0f12;--bg2:#1a1a24;--bg3:#252536;--text:#e8e8f0;--text2:#9090a8;--text3:#606078;--accent:#6c6cf0;--accent2:#8b8bf8;--accent-dim:rgba(108,108,240,0.15);--green:#3ccf7a;--orange:#f0a030;--red:#e05050;--radius:12px;--radius-sm:8px;--font:'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;--safe-bottom:env(safe-area-inset-bottom,12px)}
+html,body{height:100%;overflow:hidden}
+body{font-family:var(--font);background:var(--bg);color:var(--text);display:flex;flex-direction:column;user-select:none;-webkit-tap-highlight-color:transparent}
+header{background:var(--bg2);border-bottom:1px solid rgba(255,255,255,0.06);padding:10px 16px 0;flex-shrink:0}
+header h1{font-size:18px;font-weight:600;margin-bottom:10px;letter-spacing:0.3px}
+.level-tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.level-tabs::-webkit-scrollbar{display:none}
+.level-tab{flex-shrink:0;padding:8px 20px;border-radius:var(--radius-sm) var(--radius-sm) 0 0;font-size:14px;font-weight:500;cursor:pointer;color:var(--text2);background:transparent;border:none;transition:all 0.2s}
+.level-tab.active{background:var(--bg);color:var(--accent2)}
+.level-tab:not(.active):hover{color:var(--text);background:var(--bg3)}
+main{flex:1;overflow-y:auto;padding:12px 16px var(--safe-bottom)}
+.stage-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.stage-chip{padding:6px 16px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;border:1.5px solid var(--bg3);background:transparent;color:var(--text2);transition:all 0.2s}
+.stage-chip.active{border-color:var(--accent);background:var(--accent-dim);color:var(--accent2)}
+.stage-chip.completed{border-color:var(--green);color:var(--green)}
+.stage-desc{font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.6;padding:10px 14px;background:var(--bg2);border-radius:var(--radius-sm)}
+.exercise-card{background:var(--bg2);border-radius:var(--radius);padding:20px;margin-bottom:16px;border:1px solid rgba(255,255,255,0.05)}
+.exercise-name{font-size:20px;font-weight:600;margin-bottom:4px}
+.exercise-meta{font-size:13px;color:var(--text2);margin-bottom:16px}
+.muscle-badge{display:inline-block;padding:2px 10px;border-radius:10px;font-size:11px;font-weight:500;margin-right:6px}
+.badge-front{background:rgba(60,207,122,0.15);color:var(--green)}
+.badge-rear{background:rgba(108,108,240,0.15);color:var(--accent2)}
+.badge-combo{background:rgba(240,160,48,0.15);color:var(--orange)}
+.progress-area{display:flex;align-items:center;gap:16px;margin-bottom:12px}
+.progress-bar-wrap{flex:1;height:8px;background:var(--bg3);border-radius:4px;overflow:hidden}
+.progress-bar-fill{height:100%;border-radius:4px;background:var(--accent);transition:width 0.3s;width:0%}
+.progress-text{font-size:15px;font-weight:600;color:var(--text);white-space:nowrap}
+.action-row{display:flex;gap:10px;margin-bottom:8px}
+.btn{border:none;border-radius:var(--radius-sm);font-size:16px;font-weight:600;cursor:pointer;transition:all 0.15s;flex:1;padding:14px 0;text-align:center}
+.btn:active{transform:scale(0.96)}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:active{background:var(--accent2)}
+.btn-secondary{background:var(--bg3);color:var(--text)}
+.btn-success{background:var(--green);color:#000}
+.btn-danger{background:var(--red);color:#fff}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--bg3);flex:0;padding:14px 20px}
+.btn-small{padding:10px 0;font-size:14px;flex:0;min-width:60px}
+.timer-area{text-align:center;margin-bottom:12px;padding:12px;background:var(--bg3);border-radius:var(--radius-sm)}
+.timer-display{font-size:36px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:2px;color:var(--accent2)}
+.timer-phase{font-size:14px;color:var(--text2);margin-top:4px}
+.timer-sub{font-size:13px;color:var(--text3)}
+.phase-indicators{display:flex;gap:6px;justify-content:center;margin-top:8px}
+.phase-dot{width:10px;height:10px;border-radius:50%;background:var(--bg3);transition:all 0.3s}
+.phase-dot.active{background:var(--accent2);transform:scale(1.3)}
+.phase-dot.done{background:var(--green)}
+.nav-row{display:flex;gap:10px;margin-bottom:12px}
+.nav-btn{flex:1;padding:12px;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:500;cursor:pointer;color:var(--text);background:var(--bg3);transition:all 0.15s}
+.nav-btn:active{background:var(--bg)}
+.nav-btn:disabled{opacity:0.3;cursor:not-allowed}
+.upgrade-panel{background:linear-gradient(135deg,rgba(108,108,240,0.08),rgba(60,207,122,0.08));border:1px solid rgba(108,108,240,0.15);border-radius:var(--radius);padding:14px 16px;margin-bottom:16px}
+.upgrade-panel h3{font-size:14px;font-weight:600;color:var(--accent2);margin-bottom:6px}
+.upgrade-panel p{font-size:13px;color:var(--text2);line-height:1.5}
+.upgrade-done{color:var(--green)!important;font-weight:500}
+.session-stats{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.stat-card{flex:1;min-width:80px;background:var(--bg2);border-radius:var(--radius-sm);padding:12px;text-align:center;border:1px solid rgba(255,255,255,0.05)}
+.stat-value{font-size:22px;font-weight:700;color:var(--text)}
+.stat-label{font-size:12px;color:var(--text3);margin-top:2px}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--bg3);color:var(--text);padding:10px 24px;border-radius:20px;font-size:14px;font-weight:500;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:100;box-shadow:0 4px 20px rgba(0,0,0,0.4)}
+.toast.show{opacity:1}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:50;display:none;justify-content:center;align-items:flex-end}
+.modal-overlay.show{display:flex}
+.modal-content{background:var(--bg2);border-radius:var(--radius) var(--radius) 0 0;padding:24px;width:100%;max-width:500px;max-height:80vh;overflow-y:auto}
+.modal-content h2{font-size:18px;font-weight:600;margin-bottom:16px;color:var(--accent2)}
+.modal-close{float:right;background:none;border:none;color:var(--text2);font-size:24px;cursor:pointer}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:13px;color:var(--text2);margin-bottom:4px}
+.form-group select,.form-group input{width:100%;padding:10px;border-radius:var(--radius-sm);border:1px solid var(--bg3);background:var(--bg3);color:var(--text);font-size:15px}
+.form-group select:focus,.form-group input:focus{outline:none;border-color:var(--accent)}
+.btn-block{width:100%;margin-bottom:8px}
+.daily-plan{border-radius:var(--radius);padding:14px 16px;margin-bottom:16px;cursor:pointer;display:flex;align-items:center;justify-content:space-between}
+.daily-plan:active{transform:scale(0.98)}
+.daily-plan-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px}
+.daily-plan-title{font-size:16px;font-weight:600}
+.daily-plan-desc{font-size:13px;color:var(--text2)}
+.daily-plan-arrow{font-size:20px;color:var(--text3)}
+.timer-visual{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;margin:8px 0}
+.timer-visual-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width 0.3s;width:0%}
+.progress-levels{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.progress-level-card{flex:1;min-width:100px;background:var(--bg2);border-radius:var(--radius-sm);padding:12px;border:1px solid rgba(255,255,255,0.05)}
+.progress-level-card h4{font-size:13px;font-weight:600;margin-bottom:6px}
+.progress-level-card div{font-size:11px;color:var(--text3);line-height:1.6}
+.stage-done{color:var(--green)}
+.stage-current{color:var(--accent2);font-weight:500}
+.settings-btn{position:fixed;top:12px;right:16px;z-index:10;background:var(--bg3);border:none;color:var(--text2);width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center}
+.settings-btn:active{background:var(--accent);color:#fff}
+.btn-danger{background:var(--red);color:#fff}
+.upgrade-progress{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap}
+.upgrade-dot{width:12px;height:12px;border-radius:50%;background:var(--bg3)}
+.upgrade-dot.done{background:var(--green)}
+.upgrade-dot.today{background:var(--accent2);animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+</style>
+</head>
+<body>
+<header>
+  <h1>盆底肌训练</h1>
+  <div class="level-tabs" id="levelTabs"></div>
+</header>
+<main id="app">
+  <div class="stage-bar" id="stageBar"></div>
+  <div class="session-stats" id="sessionStats"></div>
+  <div class="stage-desc" id="stageDesc"></div>
+  <div id="exerciseArea"></div>
+  <div class="upgrade-panel" id="upgradePanel"></div>
+
+<div id="dailyPlan" class="daily-plan" onclick="goToRecommended()"></div>
+<div id="progressLevels" class="progress-levels"></div>
+<div class="modal-overlay" id="settingsModal" onclick="if(event.target===this)closeSettings()">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeSettings()">&times;</button>
+    <h2>设置</h2>
+    <div class="form-group">
+      <label>当前等级</label>
+      <select id="settingLevel" onchange="updateSettingStages()">
+        <option value="0">等级0 - 初级</option>
+        <option value="1">等级1 - 中级</option>
+        <option value="2">等级2 - 高级</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>当前阶段</label>
+      <select id="settingStage"></select>
+    </div>
+    <div class="form-group">
+      <label>每日训练目标次数</label>
+      <select id="settingDailyGoal"><option value="1">1次</option><option value="2" selected>2次</option><option value="3">3次</option></select>
+    </div>
+    <button class="btn btn-danger btn-block" onclick="resetAllProgress()">重置所有进度</button>
+    <button class="btn btn-secondary btn-block" onclick="closeSettings()">关闭</button>
+    <div style="text-align:center;margin-top:16px;font-size:12px;color:var(--text3);line-height:1.6">
+      盆底肌分级训练助手 v1.0<br>数据仅保存在本地，不会上传
+    </div>
+  </div>
+</div>
+<button class="settings-btn" onclick="openSettings()">&#9881;</button>
+</main>
+<div class="toast" id="toast"></div>
+<script>
+const LEVELS = [0,1,2];
+function ex(name,muscle,type,targetReps,holdSec,phases,desc){
+  return{name,muscle,type,targetReps,holdSec:holdSec||0,phases:phases||null,desc:desc||""};
+}
+const FRONT={id:"front",label:"BC肌",badge:"badge-front"};
+const REAR={id:"rear",label:"PC肌+IC肌",badge:"badge-rear"};
+const COMBO={id:"combo",label:"组合",badge:"badge-combo"};
+
+const DATA = {
+  "0":{
+    name:"等级0 · 初学者",
+    desc:"松弛状态，侧重灵活性与肌肉分离度训练",
+    stages:{
+      "0.1":{
+        name:"0.1 阶段 — 基础入门",
+        state:"松弛",
+        desc:"4个基础动作为主，收缩持续1秒。不要太快、不要太用力，感受肌肉动作即可。",
+        upgrade:"每天2次，轻松完成20次/组，无疲劳感，肌肉分离感增强 → 可升级",
+        exercises:[
+          ex("收缩 BC 肌",FRONT,"contract",[10,20],1,null,"中断排尿的动作，轻轻收紧1秒"),
+          ex("扩展 BC 肌",FRONT,"expand",[10,20],1,null,"加速排尿的动作，放松拉伸1秒"),
+          ex("收缩 PC 肌 + IC 肌",REAR,"contract",[10,20],1,null,"提肛，中断排便的动作1秒"),
+          ex("扩展 PC 肌 + IC 肌",REAR,"expand",[10,20],1,null,"拓肛，加速排便的动作1秒")
+        ]
+      },
+      "0.2":{
+        name:"0.2 阶段 — 变向组合",
+        state:"松弛",
+        desc:"连续变向练习：一个动作做完马上转下一个。练习肌肉之间的切换控制。",
+        upgrade:"每天2次，持续1周，转向变得容易，低疲劳感 → 可升级",
+        exercises:[
+          ex("收缩BC→扩展BC→收缩PCIC→扩展PCIC",COMBO,"sequence",[10,20],1,null,"正向循环，每个动作1秒，连续切换"),
+          ex("扩展PCIC→收缩PCIC→扩展BC→收缩BC",COMBO,"reverse",[10,20],1,null,"逆向循环，训练反向控制")
+        ]
+      },
+      "0.3":{
+        name:"0.3 阶段 — 正向+逆向",
+        state:"松弛",
+        desc:"增加次数，引入逆向顺序。有助于逆向盆底肌收缩练习。",
+        upgrade:"每天2次，轻松完成，低疲劳感 → 可升级",
+        exercises:[
+          ex("正向：收缩BC→扩展BC→收缩PCIC→扩展PCIC",COMBO,"sequence",[20,40],1,null,"正向循环20-40次"),
+          ex("逆向：扩展PCIC→收缩PCIC→扩展BC→收缩BC",COMBO,"reverse",[20,40],1,null,"逆向循环20-40次")
+        ]
+      },
+      "0.4":{
+        name:"0.4 阶段 — 耐力确认",
+        state:"松弛",
+        desc:"单个动作连续50次，确认肌肉分离度和收缩耐力。",
+        upgrade:"每天2次，持续1周，低疲劳感，动作执行到位 → 可升级",
+        exercises:[
+          ex("收缩 BC 肌",FRONT,"contract",[50,50],1,null,"50次"),
+          ex("扩展 BC 肌",FRONT,"expand",[50,50],1,null,"50次"),
+          ex("收缩 PC 肌 + IC 肌",REAR,"contract",[50,50],1,null,"50次"),
+          ex("扩展 PC 肌 + IC 肌",REAR,"expand",[50,50],1,null,"50次")
+        ]
+      },
+      "0.5":{
+        name:"0.5 阶段 — 总和训练",
+        state:"松弛",
+        desc:"0.1至0.4所有练习的总和。调整好自己的节奏！",
+        upgrade:"每天2次，持续1周，低疲劳感 → 等级0完成，进入等级1",
+        exercises:[
+          ex("0.1 阶段总和",COMBO,"round",[1,1],0,null,"0.1四组动作各做1轮"),
+          ex("0.2 阶段总和",COMBO,"round",[1,1],0,null,"0.2两组动作各做1轮"),
+          ex("0.3 阶段总和",COMBO,"round",[1,1],0,null,"0.3两组动作各做1轮"),
+          ex("0.4 阶段总和",COMBO,"round",[1,1],0,null,"0.4四组动作各做1轮")
+        ]
+      }
+    }
+  },
+  "1":{
+    name:"等级1 · 中级",
+    desc:"松弛状态，进一步提高灵活性并加入稳定性训练。每周第一天先做0.5阶段。",
+    stages:{
+      "1.1":{
+        name:"1.1 阶段 — 次数提升",
+        state:"松弛",
+        desc:"与0.4相同动作，次数提升到50-100次。可能出现平台期。",
+        upgrade:"突破平台期，完成100次不疲劳 → 可升级",
+        exercises:[
+          ex("收缩 BC 肌",FRONT,"contract",[50,100],1,null,"50-100次"),
+          ex("扩展 BC 肌",FRONT,"expand",[50,100],1,null,"50-100次"),
+          ex("收缩 PC 肌 + IC 肌",REAR,"contract",[50,100],1,null,"50-100次"),
+          ex("扩展 PC 肌 + IC 肌",REAR,"expand",[50,100],1,null,"50-100次")
+        ]
+      },
+      "1.2":{
+        name:"1.2 阶段 — 持续收缩",
+        state:"松弛",
+        desc:"保持持续收缩5-10秒。力度中等，重点是稳定性而非力量。",
+        upgrade:"持续达到5秒，每天2次，坚持1周，低疲劳感 → 可升级",
+        exercises:[
+          ex("持续扩展 BC 肌",FRONT,"hold",[10,10],[5,10],null,"持续扩展BC肌5-10秒"),
+          ex("持续收缩 PC 肌 + IC 肌",REAR,"hold",[10,10],[5,10],null,"持续收缩PCIC肌5-10秒"),
+          ex("持续扩展 PC 肌 + IC 肌",REAR,"hold",[10,10],[5,10],null,"持续扩展PCIC肌5-10秒")
+        ]
+      },
+      "1.3":{
+        name:"1.3 阶段 — 三段式",
+        state:"松弛",
+        desc:"三段式收缩：上升→保持→释放，每个阶段等时长。控制力训练。",
+        upgrade:"每段坚持5秒，每天2次，1周，低疲劳感 → 可升级",
+        exercises:[
+          ex("三段式收缩 BC 肌",FRONT,"three-stage",[10,10],[3,5],["上升","保持","释放"],"5秒上升→5秒保持→5秒释放"),
+          ex("三段式扩展 BC 肌",FRONT,"three-stage",[10,10],[3,5],["上升","保持","释放"],"5秒上升→5秒保持→5秒释放"),
+          ex("三段式收缩 PC 肌 + IC 肌",REAR,"three-stage",[10,10],[3,5],["上升","保持","释放"],"5秒上升→5秒保持→5秒释放"),
+          ex("三段式扩展 PC 肌 + IC 肌",REAR,"three-stage",[10,10],[3,5],["上升","保持","释放"],"5秒上升→5秒保持→5秒释放")
+        ]
+      },
+      "1.4":{
+        name:"1.4 阶段 — 组合式",
+        state:"松弛",
+        desc:"组合式前部收缩/扩展 + 双向收缩/扩展。难度高，但对提升控制力极其重要。",
+        upgrade:"持续达5秒，每天2次，1周，低疲劳感 → 可升级",
+        exercises:[
+          ex("组合式前部收缩",FRONT,"combo",[10,10],[3,5],null,"先5秒慢收缩→5秒保持→5秒释放→逆向5秒→5秒保持→5秒回正"),
+          ex("组合式前部扩展",FRONT,"combo",[10,10],[3,5],null,"先扩展BC肌开始，步骤反过来的组合式"),
+          ex("组合式后部收缩",REAR,"combo",[10,10],[3,5],null,"后部肌肉的组合式收缩"),
+          ex("双向收缩",COMBO,"bidirectional",[10,10],[3,5],null,"先收缩BC肌5秒→保持→加入收缩PCIC5秒→保持→同时释放"),
+          ex("双向扩展",COMBO,"bidirectional",[10,10],[3,5],null,"先扩展BC肌，同双向收缩的原理")
+        ]
+      },
+      "1.5":{
+        name:"1.5 阶段 — 总和训练",
+        state:"松弛",
+        desc:"1.2 + 1.3 + 1.4 总和训练。",
+        upgrade:"每天2次，坚持1周（第一天做0.5），低疲劳感 → 等级1完成",
+        exercises:[
+          ex("1.2 阶段总和",COMBO,"round",[1,1],0,null,"1.2三组动作各做1轮"),
+          ex("1.3 阶段总和",COMBO,"round",[1,1],0,null,"1.3四组动作各做1轮"),
+          ex("1.4 阶段总和",COMBO,"round",[1,1],0,null,"1.4五组动作各做1轮")
+        ]
+      }
+    }
+  },
+  "2":{
+    name:"等级2 · 高级",
+    desc:"侧重稳定性和条件性训练。第一天做0.5，第二天做1.5，其余做等级2内容。",
+    stages:{
+      "2.1":{
+        name:"2.1 阶段 — 20秒持续",
+        state:"松弛",
+        desc:"20秒中高力度稳定持续收缩。质量重于数量。扩展注意彻底放松拉伸。",
+        upgrade:"每天2次，持续数天（前两天给0.5和1.5），低疲劳感 → 可升级",
+        exercises:[
+          ex("20秒持续收缩 BC 肌",FRONT,"hold",[5,5],[20,20],null,"中高力度稳定持续20秒"),
+          ex("20秒持续扩展 BC 肌",FRONT,"hold",[5,5],[20,20],null,"彻底放松拉伸20秒"),
+          ex("20秒持续收缩 PC 肌 + IC 肌",REAR,"hold",[5,5],[20,20],null,"中高力度稳定持续20秒"),
+          ex("20秒持续扩展 PC 肌 + IC 肌",REAR,"hold",[5,5],[20,20],null,"彻底放松拉伸20秒")
+        ]
+      },
+      "2.2":{
+        name:"2.2 阶段 — 递增式",
+        state:"松弛",
+        desc:"递增式收缩：每5秒增加一次力量。中等→大力量→更大力量→放松。",
+        upgrade:"每天2次，持续1周（前两天做0.5和1.5），力量明显增加 → 全部完成！",
+        exercises:[
+          ex("递增式收缩 BC 肌",FRONT,"progressive",[5,5],[20,20],["中度","大","更大","放松"],"每5秒增加力度：中→大→更大→放松"),
+          ex("递增式扩展 BC 肌",FRONT,"progressive",[5,5],[20,20],["中度","大","更大","放松"],"每5秒增加力度：中→大→更大→放松"),
+          ex("递增式收缩 PC 肌 + IC 肌",REAR,"progressive",[5,5],[20,20],["中度","大","更大","放松"],"每5秒增加力度：中→大→更大→放松"),
+          ex("递增式扩展 PC 肌 + IC 肌",REAR,"progressive",[5,5],[20,20],["中度","大","更大","放松"],"每5秒增加力度：中→大→更大→放松")
+        ]
+      }
+    }
+  }
+};
+
+let state = {level:0,stage:"0.1",exerciseIdx:0,reps:0,completed:{}};
+
+function loadState(){
+  try{const s=localStorage.getItem("pelvic_state");
+    if(s){const p=JSON.parse(s);Object.assign(state,p)}
+  }catch(e){}
+}
+function saveState(){
+  localStorage.setItem("pelvic_state",JSON.stringify({
+    level:state.level,stage:state.stage,completed:state.completed
+  }));
+}
+
+let toastTimer;
+function toast(msg){
+  const el=document.getElementById("toast");el.textContent=msg;
+  el.classList.add("show");clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove("show"),2000);
+}
+
+function calcStreak(){
+  let streak=0;const d=new Date();
+  while(true){
+    const ds=d.toDateString();
+    const has=Object.values(state.completed).some(c=>c.lastDate===ds&&c.done);
+    if(has){streak++;d.setDate(d.getDate()-1)}else break;
+  }
+  return streak;
+}
+
+let timerInterval=null;
+let timerSeconds=0;
+let timerRunning=false;
+let timerPhaseIdx=0;
+
+function render(){
+  const lv=state.level;
+  const stageId=state.stage;
+  const stageData=DATA[String(lv)].stages[stageId];
+  if(!stageData)return;
+
+  document.getElementById("levelTabs").innerHTML=
+    LEVELS.map(l=>'<button class="level-tab'+(l===lv?' active':'')+'" data-level="'+l+'">等级'+l+'</button>').join("");
+
+  const stages=Object.keys(DATA[String(lv)].stages);
+  const barEl=document.getElementById("stageBar");
+  barEl.innerHTML=stages.map(s=>{
+    let cls="stage-chip";
+    if(s===stageId)cls+=" active";
+    if(state.completed[s]?.done)cls+=" completed";
+    return '<button class="'+cls+'" data-stage="'+s+'">'+s.replace(".","-")+'</button>';
+  }).join("");
+
+  const today=new Date().toDateString();
+  const todaySessions=Object.values(state.completed).filter(c=>c.lastDate===today&&c.done).length;
+  const streak=calcStreak();
+  document.getElementById("sessionStats").innerHTML=
+    '<div class="stat-card"><div class="stat-value">'+todaySessions+'</div><div class="stat-label">今日训练</div></div>'+
+    '<div class="stat-card"><div class="stat-value">'+streak+'</div><div class="stat-label">连续天数</div></div>'+
+    '<div class="stat-card"><div class="stat-value">'+stageId+'</div><div class="stat-label">当前阶段</div></div>';
+
+  document.getElementById("stageDesc").textContent="["+stageData.state+"] "+stageData.desc;
+
+  const exArr=stageData.exercises;
+  const ei=Math.min(state.exerciseIdx,exArr.length-1);
+  const cur=exArr[ei];
+  const target=cur.targetReps[1];
+  const pct=Math.min(100,Math.round(state.reps/target*100));
+
+  let timerHTML="";
+  if(cur.holdSec[0]>0&&(cur.type==="hold"||cur.type==="three-stage"||cur.type==="progressive")){
+    let phasesHTML="";
+    if(cur.phases){
+      let dots="";
+      for(let i=0;i<cur.phases.length;i++){
+        dots+='<div class="phase-dot" data-pi="'+i+'"></div>';
+      }
+      phasesHTML='<div class="phase-indicators" id="phaseIndicators">'+dots+'</div>';
+    }
+    timerHTML='<div class="timer-area">'+
+      '<div class="timer-display" id="timerDisplay">00:00</div>'+
+      '<div class="timer-phase" id="timerPhase">准备开始</div>'+
+      phasesHTML+
+      '<div class="timer-sub mt-8">目标: '+cur.holdSec[0]+'-'+cur.holdSec[1]+'秒</div>'+
+      '<div class="action-row mt-8">'+
+        '<button class="btn btn-primary btn-small" id="timerStart">开始</button>'+
+        '<button class="btn btn-secondary btn-small" id="timerPause">暂停</button>'+
+        '<button class="btn btn-ghost btn-small" id="timerReset">重置</button>'+
+      '</div></div>';
+  }
+
+  let typeLabel="";
+  if(cur.type==="contract")typeLabel="收缩";
+  else if(cur.type==="expand")typeLabel="扩展";
+  else if(cur.type==="hold")typeLabel="持续";
+  else if(cur.type==="three-stage")typeLabel="三段式";
+  else if(cur.type==="combo"||cur.type==="bidirectional")typeLabel="组合式";
+  else if(cur.type==="progressive")typeLabel="递增";
+  else typeLabel="循环";
+
+  let done=false;
+  if(cur.type==="round")done=state.reps>=1;
+  else done=state.reps>=target;
+
+  document.getElementById("exerciseArea").innerHTML=
+    '<div class="exercise-card">'+
+      '<div class="exercise-name">'+cur.name+'</div>'+
+      '<div class="exercise-meta">'+
+        '<span class="muscle-badge '+cur.muscle.badge+'">'+cur.muscle.label+'</span>'+typeLabel+
+      '</div>'+
+      (cur.desc?'<div style="font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.5">'+cur.desc+'</div>':"")+
+      '<div class="progress-area">'+
+        '<div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:'+pct+'%"></div></div>'+
+        '<div class="progress-text">'+state.reps+'/'+target+'</div>'+
+      '</div>'+
+      '<div class="action-row">'+
+        '<button class="btn btn-primary" id="btnRep">'+(done?"完成！":"+1 完成一次")+'</button>'+
+        '<button class="btn btn-ghost" id="btnResetRep" style="flex:0;padding:14px 16px">&#x21BA;</button>'+
+      '</div>'+
+      timerHTML+
+      '<div class="nav-row">'+
+        '<button class="nav-btn" id="btnPrev"'+(ei===0?" disabled":"")+'>&#x25C0; 上一个</button>'+
+        '<button class="nav-btn" id="btnNext">'+(ei>=exArr.length-1?"完成训练 &#x2713;":"下一个 &#x25B6;")+'</button>'+
+      '</div>'+
+    '</div>';
+
+  const sc=state.completed[stageId];
+  const stageComplete=sc&&sc.done;
+  document.getElementById("upgradePanel").innerHTML=
+    '<h3>'+(stageComplete?"阶段已完成":"升级条件")+'</h3>'+
+    '<p class="'+(stageComplete?"upgrade-done":"")+'">'+stageData.upgrade+(stageComplete?" \u2705":"")+'</p>';
+
+  bindEvents(stageId,exArr.length,stageData);
+}
+
+function bindEvents(stageId,totalEx,stageData){
+  document.querySelectorAll(".level-tab").forEach(el=>{
+    el.addEventListener("click",()=>{
+      const lv=parseInt(el.dataset.level);
+      if(lv===state.level)return;
+      state.level=lv;
+      const stages=Object.keys(DATA[String(lv)].stages);
+      state.stage=stages[0];state.exerciseIdx=0;state.reps=0;
+      stopTimer();saveState();render();
+    });
+  });
+  document.querySelectorAll(".stage-chip").forEach(el=>{
+    el.addEventListener("click",()=>{
+      state.stage=el.dataset.stage;state.exerciseIdx=0;state.reps=0;
+      stopTimer();saveState();render();
+    });
+  });
+
+  const btnRep=document.getElementById("btnRep");
+  if(btnRep){
+    btnRep.addEventListener("click",()=>{
+      const ex=stageData.exercises[state.exerciseIdx];
+      const target=ex.targetReps[1];
+      if(state.reps<target){
+        state.reps++;
+        if(state.reps>=target)toast("动作完成！");
+        saveState();render();
+      }
+    });
+  }
+
+  const btnReset=document.getElementById("btnResetRep");
+  if(btnReset)btnReset.addEventListener("click",()=>{state.reps=0;stopTimer();saveState();render();});
+
+  const btnPrev=document.getElementById("btnPrev");
+  if(btnPrev)btnPrev.addEventListener("click",()=>{
+    if(state.exerciseIdx>0){state.exerciseIdx--;state.reps=0;stopTimer();saveState();render();}
+  });
+
+  const btnNext=document.getElementById("btnNext");
+  if(btnNext)btnNext.addEventListener("click",()=>{
+    if(state.exerciseIdx>=totalEx-1){
+      if(!state.completed[stageId])state.completed[stageId]={done:false,totalSessions:0,lastDate:""};
+      const c=state.completed[stageId];
+      c.done=true;c.totalSessions=(c.totalSessions||0)+1;c.lastDate=new Date().toDateString();
+      const stages=Object.keys(DATA[String(state.level)].stages);
+      const idx=stages.indexOf(stageId);
+      if(idx<stages.length-1){state.stage=stages[idx+1];state.exerciseIdx=0;}
+      else{
+        const nlv=state.level+1;
+        if(nlv<=2){state.level=nlv;
+          const ns=Object.keys(DATA[String(nlv)].stages);state.stage=ns[0];state.exerciseIdx=0;}
+      }
+      state.reps=0;stopTimer();toast("阶段完成！已进入下一阶段");saveState();render();
+    }else{state.exerciseIdx++;state.reps=0;stopTimer();saveState();render();}
+  });
+
+  bindTimer(stageData);
+}
+
+function bindTimer(stageData){
+  const ex=stageData.exercises[state.exerciseIdx];
+  if(!ex||ex.holdSec[0]<=0)return;
+  const btnStart=document.getElementById("timerStart");
+  const btnPause=document.getElementById("timerPause");
+  const btnReset=document.getElementById("timerReset");
+  if(!btnStart)return;
+  btnStart.addEventListener("click",()=>{if(!timerRunning)startTimer(ex);});
+  btnPause.addEventListener("click",()=>{if(timerRunning)pauseTimer();});
+  btnReset.addEventListener("click",()=>{stopTimer();updateDisplay(0,ex);});
+}
+
+function startTimer(ex){
+  if(timerRunning)return;
+  timerRunning=true;timerPhaseIdx=0;
+  const holdTarget=ex.holdSec[1];
+  const is3=ex.type==="three-stage";
+  const isP=ex.type==="progressive";
+  const phaseLen=Math.round(holdTarget/(ex.phases?ex.phases.length:1));
+  timerInterval=setInterval(()=>{
+    timerSeconds++;
+    updateDisplay(timerSeconds,ex);
+    if((is3||isP)&&ex.phases){
+      const plen=Math.round(holdTarget/ex.phases.length);
+      const np=Math.min(Math.floor(timerSeconds/plen),ex.phases.length-1);
+      if(np!==timerPhaseIdx){
+        timerPhaseIdx=np;
+        const dots=document.querySelectorAll(".phase-dot");
+        dots.forEach((d,i)=>{
+          d.className="phase-dot"+(i<timerPhaseIdx?" done":"")+(i===timerPhaseIdx?" active":"");
+        });
+        const pe=document.getElementById("timerPhase");
+        if(pe)pe.textContent=ex.phases[timerPhaseIdx];
+      }
+    }
+    if(timerSeconds>=holdTarget){
+      stopTimer();updateDisplay(holdTarget,ex);toast("持续时间达标！");
+      if(state.reps<ex.targetReps[1]){state.reps++;saveState();render();}
+    }
+  },1000);
+}
+function pauseTimer(){timerRunning=false;if(timerInterval){clearInterval(timerInterval);timerInterval=null;}}
+function stopTimer(){timerRunning=false;if(timerInterval){clearInterval(timerInterval);timerInterval=null;}timerSeconds=0;}
+function updateDisplay(s,ex){
+  const d=document.getElementById("timerDisplay");
+  if(!d)return;
+  d.textContent=String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");
+}
+
+loadState();
+const s0=Object.keys(DATA[String(state.level)].stages);
+if(!state.stage||!s0.includes(state.stage))state.stage=s0[0];
+saveState();
+render();
+
+// ===== DAILY TRAINING PLAN =====
+function getDayOfWeekPlan() {
+  var lv = state.level;
+  var today = new Date().getDay();
+  var stages = Object.keys(DATA[String(lv)].stages);
+  if (lv === 0) {
+    return {stage: state.stage, label: "继续当前阶段", desc: DATA["0"].stages[state.stage] ? DATA["0"].stages[state.stage].name : ""};
+  }
+  if (lv === 1) {
+    if (today === 1) return {stage: "0.5", label: "周一热身", desc: "先做0.5阶段唤醒盆底肌"};
+    return {stage: state.stage, label: "等级1训练", desc: DATA["1"].stages[state.stage] ? DATA["1"].stages[state.stage].name : ""};
+  }
+  if (lv === 2) {
+    if (today === 1) return {stage: "0.5", label: "周一: 等级0热身", desc: "0.5阶段唤醒盆底肌"};
+    if (today === 2) return {stage: "1.5", label: "周二: 等级1热身", desc: "1.5阶段唤醒盆底肌"};
+    return {stage: state.stage, label: "等级2训练", desc: DATA["2"].stages[state.stage] ? DATA["2"].stages[state.stage].name : ""};
+  }
+  return {stage: state.stage, label: "", desc: ""};
+}
+
+function renderDailyPlan() {
+  var plan = getDayOfWeekPlan();
+  var el = document.getElementById("dailyPlan");
+  if (!el) return;
+  el.innerHTML = '<div style="flex:1">' +
+    '<div class="daily-plan-label">今日推荐</div>' +
+    '<div class="daily-plan-title">' + plan.label + '</div>' +
+    '<div class="daily-plan-desc">' + plan.desc + '</div>' +
+    '</div><div class="daily-plan-arrow">&#8250;</div>';
+}
+
+function goToRecommended() {
+  var plan = getDayOfWeekPlan();
+  if (plan.stage) {
+    var stages = Object.keys(DATA[String(state.level)].stages);
+    if (stages.indexOf(plan.stage) >= 0) {
+      state.stage = plan.stage;
+      state.exerciseIdx = 0;
+      state.reps = 0;
+      stopTimer();
+      saveState();
+      render();
+      toast("已切换到今日推荐训练");
+    }
+  }
+}
+
+// ===== PROGRESS LEVELS =====
+function renderProgressLevels() {
+  var el = document.getElementById("progressLevels");
+  if (!el) return;
+  var html = "";
+  for (var lv = 0; lv <= 2; lv++) {
+    var stages = Object.keys(DATA[String(lv)].stages);
+    var stageHtml = "";
+    for (var si = 0; si < stages.length; si++) {
+      var s = stages[si];
+      var comp = state.completed[s];
+      var cls = "";
+      if (comp && comp.done) cls = "stage-done";
+      else if (s === state.stage && lv === state.level) cls = "stage-current";
+      stageHtml += '<div class="' + cls + '">' + s + (cls === "stage-done" ? " \u2713" : "") + "</div>";
+    }
+    html += '<div class="progress-level-card"><h4>\u7b49\u7ea7' + lv + "</h4><div>" + stageHtml + "</div></div>";
+  }
+  el.innerHTML = html;
+}
+
+// ===== SETTINGS =====
+function openSettings() {
+  document.getElementById("settingLevel").value = String(state.level);
+  updateSettingStages();
+  document.getElementById("settingsModal").classList.add("show");
+}
+function closeSettings() {
+  document.getElementById("settingsModal").classList.remove("show");
+}
+function updateSettingStages() {
+  var lv = parseInt(document.getElementById("settingLevel").value);
+  var stages = Object.keys(DATA[String(lv)].stages);
+  var sel = document.getElementById("settingStage");
+  var html = "";
+  for (var i = 0; i < stages.length; i++) {
+    var s = stages[i];
+    var selAttr = (s === state.stage && lv === state.level) ? " selected" : "";
+    html += '<option value="' + s + '"' + selAttr + ">" + s + " -- " + DATA[String(lv)].stages[s].name + "</option>";
+  }
+  sel.innerHTML = html;
+}
+function resetAllProgress() {
+  if (!confirm("\u786e\u5b9a\u8981\u91cd\u7f6e\u6240\u6709\u8bad\u7ec3\u8fdb\u5ea6\u5417\uff1f\u6b64\u64cd\u4f5c\u4e0d\u53ef\u64a4\u9500\u3002")) return;
+  state.level = 0;
+  var s0 = Object.keys(DATA["0"].stages);
+  state.stage = s0[0];
+  state.exerciseIdx = 0;
+  state.reps = 0;
+  state.completed = {};
+  saveState();
+  closeSettings();
+  render();
+  toast("\u8fdb\u5ea6\u5df2\u91cd\u7f6e");
+}
+
+// ===== ENHANCED UPGRADE =====
+function renderUpgradeEnhanced() {
+  var stageId = state.stage;
+  var stageData = DATA[String(state.level)].stages[stageId];
+  if (!stageData) return;
+  var sc = state.completed[stageId];
+  var el = document.getElementById("upgradePanel");
+  if (!el) return;
+  var recentSessions = 0;
+  var d = new Date();
+  for (var i = 0; i < 7; i++) {
+    var ds = d.toDateString();
+    var val = Object.values(state.completed);
+    for (var vi = 0; vi < val.length; vi++) {
+      if (val[vi].lastDate === ds && val[vi].done) recentSessions++;
+    }
+    d.setDate(d.getDate() - 1);
+  }
+  var stageComplete = sc && sc.done;
+  var dots = "";
+  for (var di = 0; di < 7; di++) {
+    var dotCls = "upgrade-dot";
+    if (di < recentSessions) dotCls += " done";
+    if (di === recentSessions && !stageComplete) dotCls += " today";
+    dots += '<div class="' + dotCls + '"></div>';
+  }
+  el.innerHTML = "<h3>" + (stageComplete ? "\u9636\u6bb5\u5df2\u5b8c\u6210" : "\u5347\u7ea7\u6761\u4ef6") + "</h3>" +
+    '<p class="' + (stageComplete ? "upgrade-done" : "") + '">' + stageData.upgrade + (stageComplete ? " \u2705" : "") + "</p>" +
+    (!stageComplete ? '<div class="upgrade-progress">' + dots + '</div><div style="font-size:12px;color:var(--text3);margin-top:4px">\u672c\u5468\u8bad\u7ec3: ' + recentSessions + "/7\u5929</div>" : "");
+}
+
+// ===== ENHANCED TIMER =====
+function addTimerVisualBar() {
+  var area = document.querySelector(".timer-area");
+  if (!area) return;
+  var existing = area.querySelector(".timer-visual");
+  if (existing) return;
+  var v = document.createElement("div");
+  v.className = "timer-visual";
+  v.innerHTML = '<div class="timer-visual-fill" id="timerVisualFill"></div>';
+  var sub = area.querySelector(".timer-sub");
+  if (sub) area.insertBefore(v, sub);
+  else area.appendChild(v);
+}
+
+// Patch startTimer to add visual bar
+var _origST = startTimer;
+startTimer = function(ex) {
+  addTimerVisualBar();
+  _origST(ex);
+};
+
+// Patch updateDisplay to update visual bar
+var _origUD = updateDisplay;
+updateDisplay = function(s, ex) {
+  _origUD(s, ex);
+  var vf = document.getElementById("timerVisualFill");
+  if (vf && ex && ex.holdSec) {
+    var pct = Math.min(100, s / ex.holdSec[1] * 100);
+    vf.style.width = pct + "%";
+  }
+};
+
+// Patch toast to force show
+var _origToast = toast;
+toast = function(msg) {
+  var el = document.getElementById("toast");
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function() { el.classList.remove("show"); }, 2000);
+};
+
+// ===== PATCH RENDER =====
+var _origR = render;
+render = function() {
+  _origR();
+  renderDailyPlan();
+  renderProgressLevels();
+  renderUpgradeEnhanced();
+};
+
+// Re-trigger render to apply patches
+render();
+
+// ===== SERVICE WORKER REGISTRATION =====
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js").catch(function(err) {
+    console.log("SW registration failed:", err);
+  });
+}
+</script></body></html>

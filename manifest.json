@@ -1,0 +1,10 @@
+{
+  "name": "盆底肌训练助手",
+  "short_name": "盆底肌训练",
+  "description": "盆底肌（PC肌/BC肌/IC肌）分级训练辅助工具",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#0f0f12",
+  "theme_color": "#6c6cf0",
+  "icons": []
+}
