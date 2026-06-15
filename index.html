@@ -316,16 +316,16 @@ const DATA = {
   }
 };
 
-let state = {level:0,stage:"0.1",exerciseIdx:0,reps:0,completed:{}};
+let state = {level:0,stage:"0.1",exerciseIdx:0,reps:0,completed:{},dailyGoal:2};
 
 function loadState(){
   try{const s=localStorage.getItem("pelvic_state");
-    if(s){const p=JSON.parse(s);Object.assign(state,p)}
+    if(s){const p=JSON.parse(s);Object.assign(state,p)}if(!state.dailyGoal)state.dailyGoal=2
   }catch(e){}
 }
 function saveState(){
   localStorage.setItem("pelvic_state",JSON.stringify({
-    level:state.level,stage:state.stage,completed:state.completed
+    level:state.level,stage:state.stage,completed:state.completed,dailyGoal:state.dailyGoal
   }));
 }
 
@@ -655,6 +655,12 @@ function updateSettingStages() {
   }
   sel.innerHTML = html;
 }
+function onDailyGoalChange(){
+  var val=parseInt(document.getElementById("settingDailyGoal").value);
+  state.dailyGoal=val;
+  saveState();
+}
+
 function resetAllProgress() {
   if (!confirm("\u786e\u5b9a\u8981\u91cd\u7f6e\u6240\u6709\u8bad\u7ec3\u8fdb\u5ea6\u5417\uff1f\u6b64\u64cd\u4f5c\u4e0d\u53ef\u64a4\u9500\u3002")) return;
   state.level = 0;
