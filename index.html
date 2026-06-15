@@ -316,16 +316,17 @@ const DATA = {
   }
 };
 
-let state = {level:0,stage:"0.1",exerciseIdx:0,reps:0,completed:{},dailyGoal:2};
+let state = {level:0,stage:"0.1",exerciseIdx:0,reps:0,completed:{},dailyGoal:2,todaySessions:0,sessionDate:""};
 
 function loadState(){
   try{const s=localStorage.getItem("pelvic_state");
     if(s){const p=JSON.parse(s);Object.assign(state,p)}if(!state.dailyGoal)state.dailyGoal=2
+if(!state.sessionDate)state.sessionDate=""
   }catch(e){}
 }
 function saveState(){
   localStorage.setItem("pelvic_state",JSON.stringify({
-    level:state.level,stage:state.stage,completed:state.completed,dailyGoal:state.dailyGoal
+    level:state.level,stage:state.stage,completed:state.completed,dailyGoal:state.dailyGoal,todaySessions:state.todaySessions,sessionDate:state.sessionDate
   }));
 }
 
@@ -370,7 +371,7 @@ function render(){
   }).join("");
 
   const today=new Date().toDateString();
-  const todaySessions=Object.values(state.completed).filter(c=>c.lastDate===today&&c.done).length;
+  var todaySessions=state.todaySessions;if(state.sessionDate!==today){todaySessions=0;state.todaySessions=0;state.sessionDate=today}
   const streak=calcStreak();
   document.getElementById("sessionStats").innerHTML=
     '<div class="stat-card"><div class="stat-value">'+todaySessions+'</div><div class="stat-label">今日训练</div></div>'+
@@ -496,6 +497,7 @@ function bindEvents(stageId,totalEx,stageData){
       if(!state.completed[stageId])state.completed[stageId]={done:false,totalSessions:0,lastDate:""};
       const c=state.completed[stageId];
       c.done=true;c.totalSessions=(c.totalSessions||0)+1;c.lastDate=new Date().toDateString();
+      var td=new Date().toDateString();if(state.sessionDate!==td){state.sessionDate=td;state.todaySessions=0}state.todaySessions++;
       const stages=Object.keys(DATA[String(state.level)].stages);
       const idx=stages.indexOf(stageId);
       if(idx<stages.length-1){state.stage=stages[idx+1];state.exerciseIdx=0;}
