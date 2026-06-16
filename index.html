@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#6c6cf0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>盆底肌训练助手</title>
+<title>盆底肌训练</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#0f0f12;--bg2:#1a1a24;--bg3:#252536;--text:#e8e8f0;--text2:#9090a8;--text3:#606078;--accent:#6c6cf0;--accent2:#8b8bf8;--accent-dim:rgba(108,108,240,0.15);--green:#3ccf7a;--orange:#f0a030;--red:#e05050;--radius:12px;--radius-sm:8px;--font:'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;--safe-bottom:env(safe-area-inset-bottom,12px)}
@@ -67,8 +67,6 @@ main{flex:1;overflow-y:auto;padding:12px 16px var(--safe-bottom)}
 .stat-label{font-size:12px;color:var(--text3);margin-top:2px}
 .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--bg3);color:var(--text);padding:10px 24px;border-radius:20px;font-size:14px;font-weight:500;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:100;box-shadow:0 4px 20px rgba(0,0,0,0.4)}
 .toast.show{opacity:1}
-
-/* Modal */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:50;display:none;justify-content:center;align-items:flex-end}
 .modal-overlay.show{display:flex}
 .modal-content{background:var(--bg2);border-radius:var(--radius) var(--radius) 0 0;padding:24px;width:100%;max-width:500px;max-height:80vh;overflow-y:auto}
@@ -100,14 +98,10 @@ main{flex:1;overflow-y:auto;padding:12px 16px var(--safe-bottom)}
 .upgrade-dot{width:12px;height:12px;border-radius:50%;background:var(--bg3)}
 .upgrade-dot.done{background:var(--green)}
 .upgrade-dot.today{background:var(--accent2);animation:pulse 1.5s infinite}
-
-/* View toggle */
 .view-toggle{display:flex;gap:0;margin-bottom:12px;border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--bg3)}
 .view-toggle-btn{flex:1;padding:10px;border:none;font-size:14px;font-weight:500;cursor:pointer;background:var(--bg3);color:var(--text2);transition:all 0.2s}
 .view-toggle-btn.active{background:var(--accent);color:#fff}
 .view-toggle-btn:not(.active):hover{background:var(--bg2)}
-
-/* Stats view */
 .stats-view{padding-bottom:20px}
 .stats-heatmap{background:var(--bg2);border-radius:var(--radius);padding:16px;margin-bottom:12px}
 .stats-heatmap h3{font-size:14px;font-weight:600;color:var(--text2);margin-bottom:8px}
@@ -128,8 +122,6 @@ main{flex:1;overflow-y:auto;padding:12px 16px var(--safe-bottom)}
 .heatmap-nav button{background:var(--bg3);border:none;color:var(--text2);width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
 .heatmap-nav button:active{background:var(--accent);color:#fff}
 .heatmap-nav span{font-size:14px;font-weight:500;color:var(--text);min-width:80px;text-align:center}
-
-/* Stats cards */
 .stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px}
 .stats-card{background:var(--bg2);border-radius:var(--radius-sm);padding:14px;text-align:center}
 .stats-card .num{font-size:24px;font-weight:700;color:var(--text)}
@@ -139,13 +131,9 @@ main{flex:1;overflow-y:auto;padding:12px 16px var(--safe-bottom)}
 .stats-card .num.green{color:var(--green)}
 .stats-card .num.accent{color:var(--accent2)}
 .stats-card .num.orange{color:var(--orange)}
-
-/* Level progress bars */
 .level-progress-bar{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;margin:4px 0}
 .level-progress-fill{height:100%;border-radius:3px;background:var(--accent);transition:width 0.5s;width:0%}
 .level-progress-fill.complete{background:var(--green)}
-
-/* Training log */
 .log-list{background:var(--bg2);border-radius:var(--radius);padding:12px;margin-bottom:12px;max-height:300px;overflow-y:auto}
 .log-item{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.03)}
 .log-item:last-child{border-bottom:none}
@@ -156,6 +144,33 @@ main{flex:1;overflow-y:auto;padding:12px 16px var(--safe-bottom)}
 .log-item .badge{font-size:11px;padding:2px 8px;border-radius:8px;background:var(--accent-dim);color:var(--accent2);flex-shrink:0}
 .log-empty{text-align:center;padding:24px;color:var(--text3);font-size:14px}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+
+.plan-view{padding-bottom:20px}
+.plan-empty{text-align:center;padding:40px 20px}
+.plan-empty h3{font-size:18px;font-weight:600;color:var(--text2);margin-bottom:8px}
+.plan-empty p{font-size:14px;color:var(--text3);margin-bottom:20px;line-height:1.6}
+.plan-create-btn{padding:14px 32px;border:none;border-radius:var(--radius-sm);font-size:16px;font-weight:600;cursor:pointer;background:var(--accent);color:#fff;transition:all 0.15s}
+.plan-create-btn:active{transform:scale(0.96)}
+.plan-header{background:var(--bg2);border-radius:var(--radius);padding:16px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+.plan-header-left{display:flex;flex-direction:column;gap:4px}
+.plan-header-title{font-size:16px;font-weight:600;color:var(--text)}
+.plan-header-sub{font-size:12px;color:var(--text3)}
+.plan-header-pct{font-size:22px;font-weight:700;color:var(--accent2)}
+.plan-progress-bar{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;margin:4px 0}
+.plan-progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width 0.5s;width:0%}
+.plan-week-list{display:flex;flex-direction:column;gap:6px}
+.plan-week-item{background:var(--bg2);border-radius:var(--radius-sm);padding:12px 14px;display:flex;align-items:center;gap:12px;border:1px solid transparent;transition:all 0.15s}
+.plan-week-item.current{border-color:var(--accent);background:var(--accent-dim)}
+.plan-week-item.completed{opacity:0.7}
+.plan-week-num{font-size:12px;font-weight:600;color:var(--text3);min-width:60px}
+.plan-week-stage{flex:1;font-size:14px;font-weight:500}
+.plan-week-stage .sname{font-size:11px;color:var(--text3);font-weight:400}
+.plan-week-status{font-size:12px;padding:3px 10px;border-radius:10px;font-weight:500}
+.plan-week-status.done{background:rgba(60,207,122,0.15);color:var(--green)}
+.plan-week-status.active{background:var(--accent-dim);color:var(--accent2)}
+.plan-week-status.pending{background:var(--bg3);color:var(--text3)}
+.plan-actions{display:flex;gap:10px;margin-top:12px}
+.plan-actions .btn{flex:0;padding:10px 18px;font-size:13px}
 </style>
 </head>
 <body>
@@ -170,10 +185,10 @@ main{flex:1;overflow-y:auto;padding:12px 16px var(--safe-bottom)}
   <div id="exerciseArea"></div>
   <div class="upgrade-panel" id="upgradePanel"></div>
 
-
 <div class="view-toggle" id="viewToggle">
   <button class="view-toggle-btn active" data-view="train" onclick="switchView('train')">训练</button>
   <button class="view-toggle-btn" data-view="stats" onclick="switchView('stats')">统计</button>
+  <button class="view-toggle-btn" data-view="plan" onclick="switchView('plan')">计划</button>
 </div>
 <div id="statsView" class="stats-view hidden">
   <div class="stats-heatmap">
@@ -190,10 +205,23 @@ main{flex:1;overflow-y:auto;padding:12px 16px var(--safe-bottom)}
       <div class="cell l4"></div>
       <span>多</span>
     </div>
+  </div>
   <div class="stats-grid" id="statsGrid"></div>
   <div id="levelProgressCards"></div>
   <h3 style="font-size:14px;font-weight:600;color:var(--text2);margin-bottom:8px">训练日志</h3>
   <div class="log-list" id="trainingLog"></div>
+</div>
+<div id="planView" class="plan-view hidden">
+  <div class="plan-empty" id="planEmpty">
+    <h3>还没有训练计划</h3>
+    <p>制定一个训练周期计划，系统会根据你的进度自动推荐每周训练内容。</p>
+    <button class="plan-create-btn" onclick="openPlanModal()">制定训练计划</button>
+  </div>
+  <div id="planContent" style="display:none">
+    <div class="plan-header" id="planHeader"></div>
+    <div class="plan-week-list" id="planWeekList"></div>
+    <div class="plan-actions" id="planActions"></div>
+  </div>
 </div>
 <div id="dailyPlan" class="daily-plan" onclick="goToRecommended()"></div>
 <div id="progressLevels" class="progress-levels"></div>
@@ -224,11 +252,26 @@ main{flex:1;overflow-y:auto;padding:12px 16px var(--safe-bottom)}
     </div>
   </div>
 </div>
+<div class="modal-overlay" id="planModal" onclick="if(event.target===this)closePlanModal()">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closePlanModal()">&times;</button>
+    <h2>制定训练计划</h2>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.6">系统会根据你当前的训练进度，自动生成一个训练周期计划。每周推荐一个阶段，你可以自由选择训练内容。</p>
+    <div class="form-group">
+      <label>训练周期</label>
+      <select id="planDuration">
+        <option value="3">3个月（约12周，每阶段约1周）</option>
+        <option value="6">6个月（约24周，每阶段约2周）</option>
+      </select>
+    </div>
+    <button class="btn btn-primary btn-block" onclick="createPlan()">生成计划</button>
+    <button class="btn btn-secondary btn-block" onclick="closePlanModal()">取消</button>
+  </div>
+</div>
 <button class="settings-btn" onclick="openSettings()">&#9881;</button>
 </main>
 <div class="toast" id="toast"></div>
-<script>
-const LEVELS = [0,1,2];
+<script>const LEVELS = [0,1,2];
 function ex(name,muscle,type,targetReps,holdSec,phases,desc){
   return{name,muscle,type,targetReps,holdSec:holdSec||0,phases:phases||null,desc:desc||""};
 }
@@ -239,57 +282,57 @@ const COMBO={id:"combo",label:"组合",badge:"badge-combo"};
 const DATA = {
   "0":{
     name:"等级0 · 初学者",
-    desc:"松弛状态，侧重灵活性与肌肉分离度训练",
+    desc:"放松状态，侧重灵活性与肌肉分离度训练",
     stages:{
       "0.1":{
-        name:"0.1 阶段 — 基础入门",
-        state:"松弛",
+        name:"0.1 阶段 · 基础入门",
+        state:"放松",
         desc:"4个基础动作为主，收缩持续1秒。不要太快、不要太用力，感受肌肉动作即可。",
-        upgrade:"每天2次，轻松完成20次/组，无疲劳感，肌肉分离感增强 → 可升级",
+        upgrade:"每天2次，轻松完成20次/组，无疲劳感，肌肉分离感增强 -> 可升级",
         exercises:[
           ex("收缩 BC 肌",FRONT,"contract",[10,20],1,null,"中断排尿的动作，轻轻收紧1秒"),
           ex("扩展 BC 肌",FRONT,"expand",[10,20],1,null,"加速排尿的动作，放松拉伸1秒"),
-          ex("收缩 PC 肌 + IC 肌",REAR,"contract",[10,20],1,null,"提肛，中断排便的动作1秒"),
-          ex("扩展 PC 肌 + IC 肌",REAR,"expand",[10,20],1,null,"拓肛，加速排便的动作1秒")
+          ex("收缩 PC 肌+ IC 肌",REAR,"contract",[10,20],1,null,"提肛，中断排便的动作1秒"),
+          ex("扩展 PC 肌+ IC 肌",REAR,"expand",[10,20],1,null,"拓肛，加速排便的动作1秒")
         ]
       },
       "0.2":{
-        name:"0.2 阶段 — 变向组合",
-        state:"松弛",
+        name:"0.2 阶段 · 变向组合",
+        state:"放松",
         desc:"连续变向练习：一个动作做完马上转下一个。练习肌肉之间的切换控制。",
-        upgrade:"每天2次，持续1周，转向变得容易，低疲劳感 → 可升级",
+        upgrade:"每天2次，持续1周，转向变得容易，低疲劳感 -> 可升级",
         exercises:[
-          ex("收缩BC→扩展BC→收缩PCIC→扩展PCIC",COMBO,"sequence",[10,20],1,null,"正向循环，每个动作1秒，连续切换"),
-          ex("扩展PCIC→收缩PCIC→扩展BC→收缩BC",COMBO,"reverse",[10,20],1,null,"逆向循环，训练反向控制")
+          ex("收缩BC->扩展BC->收缩PCIC->扩展PCIC",COMBO,"sequence",[10,20],1,null,"正向循环，每个动作1秒，连续切换"),
+          ex("扩展PCIC->收缩PCIC->扩展BC->收缩BC",COMBO,"reverse",[10,20],1,null,"逆向循环，训练反向控制")
         ]
       },
       "0.3":{
-        name:"0.3 阶段 — 正向+逆向",
-        state:"松弛",
+        name:"0.3 阶段 · 正向+逆向",
+        state:"放松",
         desc:"增加次数，引入逆向顺序。有助于逆向盆底肌收缩练习。",
-        upgrade:"每天2次，轻松完成，低疲劳感 → 可升级",
+        upgrade:"每天2次，轻松完成，低疲劳感 -> 可升级",
         exercises:[
-          ex("正向：收缩BC→扩展BC→收缩PCIC→扩展PCIC",COMBO,"sequence",[20,40],1,null,"正向循环20-40次"),
-          ex("逆向：扩展PCIC→收缩PCIC→扩展BC→收缩BC",COMBO,"reverse",[20,40],1,null,"逆向循环20-40次")
+          ex("正向：收缩BC->扩展BC->收缩PCIC->扩展PCIC",COMBO,"sequence",[20,40],1,null,"正向循环20-40次"),
+          ex("逆向：扩展PCIC->收缩PCIC->扩展BC->收缩BC",COMBO,"reverse",[20,40],1,null,"逆向循环20-40次")
         ]
       },
       "0.4":{
-        name:"0.4 阶段 — 耐力确认",
-        state:"松弛",
+        name:"0.4 阶段 · 耐力确认",
+        state:"放松",
         desc:"单个动作连续50次，确认肌肉分离度和收缩耐力。",
-        upgrade:"每天2次，持续1周，低疲劳感，动作执行到位 → 可升级",
+        upgrade:"每天2次，持续1周，低疲劳感，动作执行到位 -> 可升级",
         exercises:[
           ex("收缩 BC 肌",FRONT,"contract",[50,50],1,null,"50次"),
           ex("扩展 BC 肌",FRONT,"expand",[50,50],1,null,"50次"),
-          ex("收缩 PC 肌 + IC 肌",REAR,"contract",[50,50],1,null,"50次"),
-          ex("扩展 PC 肌 + IC 肌",REAR,"expand",[50,50],1,null,"50次")
+          ex("收缩 PC 肌+ IC 肌",REAR,"contract",[50,50],1,null,"50次"),
+          ex("扩展 PC 肌+ IC 肌",REAR,"expand",[50,50],1,null,"50次")
         ]
       },
       "0.5":{
-        name:"0.5 阶段 — 总和训练",
-        state:"松弛",
+        name:"0.5 阶段 · 总和训练",
+        state:"放松",
         desc:"0.1至0.4所有练习的总和。调整好自己的节奏！",
-        upgrade:"每天2次，持续1周，低疲劳感 → 等级0完成，进入等级1",
+        upgrade:"每天2次，持续1周，低疲劳感 -> 等级0完成，进入等级1",
         exercises:[
           ex("0.1 阶段总和",COMBO,"round",[1,1],0,null,"0.1四组动作各做1轮"),
           ex("0.2 阶段总和",COMBO,"round",[1,1],0,null,"0.2两组动作各做1轮"),
@@ -301,361 +344,377 @@ const DATA = {
   },
   "1":{
     name:"等级1 · 中级",
-    desc:"松弛状态，进一步提高灵活性并加入稳定性训练。每周第一天先做0.5阶段。",
+    desc:"放松状态，侧重灵活性与稳定性",
     stages:{
       "1.1":{
-        name:"1.1 阶段 — 次数提升",
-        state:"松弛",
-        desc:"与0.4相同动作，次数提升到50-100次。可能出现平台期。",
-        upgrade:"突破平台期，完成100次不疲劳 → 可升级",
+        name:"1.1 阶段 · 平台期",
+        state:"放松",
+        desc:"各50-100次（平台期），每组数量根据自身状态调整。",
+        upgrade:"每天2次，持续1周，轻松完成100次，低疲劳感 -> 可升级",
         exercises:[
           ex("收缩 BC 肌",FRONT,"contract",[50,100],1,null,"50-100次"),
           ex("扩展 BC 肌",FRONT,"expand",[50,100],1,null,"50-100次"),
-          ex("收缩 PC 肌 + IC 肌",REAR,"contract",[50,100],1,null,"50-100次"),
-          ex("扩展 PC 肌 + IC 肌",REAR,"expand",[50,100],1,null,"50-100次")
+          ex("收缩 PC 肌+ IC 肌",REAR,"contract",[50,100],1,null,"50-100次"),
+          ex("扩展 PC 肌+ IC 肌",REAR,"expand",[50,100],1,null,"50-100次")
         ]
       },
       "1.2":{
-        name:"1.2 阶段 — 持续收缩",
-        state:"松弛",
-        desc:"保持持续收缩5-10秒。力度中等，重点是稳定性而非力量。",
-        upgrade:"持续达到5秒，每天2次，坚持1周，低疲劳感 → 可升级",
+        name:"1.2 阶段 · 持续收缩",
+        state:"放松",
+        desc:"持续收缩5-10秒 x 10次。锻炼长时间保持能力。",
+        upgrade:"每天2次，持续1周，轻松完成5-10秒保持 -> 可升级",
         exercises:[
-          ex("持续扩展 BC 肌",FRONT,"hold",[10,10],[5,10],null,"持续扩展BC肌5-10秒"),
-          ex("持续收缩 PC 肌 + IC 肌",REAR,"hold",[10,10],[5,10],null,"持续收缩PCIC肌5-10秒"),
-          ex("持续扩展 PC 肌 + IC 肌",REAR,"hold",[10,10],[5,10],null,"持续扩展PCIC肌5-10秒")
+          ex("持续收缩 BC 肌",FRONT,"hold",[10,10],[5,10],["放松","收缩并保持5-10秒","放松"],"持续收缩，慢慢延长时间"),
+          ex("持续收缩 PC 肌+ IC 肌",REAR,"hold",[10,10],[5,10],["放松","收缩并保持5-10秒","放松"],"持续收缩，慢慢延长时间")
         ]
       },
       "1.3":{
-        name:"1.3 阶段 — 三段式",
-        state:"松弛",
-        desc:"三段式收缩：上升→保持→释放，每个阶段等时长。控制力训练。",
-        upgrade:"每段坚持5秒，每天2次，1周，低疲劳感 → 可升级",
+        name:"1.3 阶段 · 三段式",
+        state:"放松",
+        desc:"三段式收缩：2秒上升 + 5秒保持 + 5秒释放。控制收缩和释放的速度。",
+        upgrade:"每天2次，持续1周，动作节奏清晰 -> 可升级",
         exercises:[
-          ex("三段式收缩 BC 肌",FRONT,"three-stage",[10,10],[3,5],["上升","保持","释放"],"5秒上升→5秒保持→5秒释放"),
-          ex("三段式扩展 BC 肌",FRONT,"three-stage",[10,10],[3,5],["上升","保持","释放"],"5秒上升→5秒保持→5秒释放"),
-          ex("三段式收缩 PC 肌 + IC 肌",REAR,"three-stage",[10,10],[3,5],["上升","保持","释放"],"5秒上升→5秒保持→5秒释放"),
-          ex("三段式扩展 PC 肌 + IC 肌",REAR,"three-stage",[10,10],[3,5],["上升","保持","释放"],"5秒上升→5秒保持→5秒释放")
+          ex("三段式 BC 肌",FRONT,"three-stage",[10,10],12,["上升2秒","保持5秒","释放5秒"],"2-5-5节奏"),
+          ex("三段式 PC 肌+ IC 肌",REAR,"three-stage",[10,10],12,["上升2秒","保持5秒","释放5秒"],"2-5-5节奏")
         ]
       },
       "1.4":{
-        name:"1.4 阶段 — 组合式",
-        state:"松弛",
-        desc:"组合式前部收缩/扩展 + 双向收缩/扩展。难度高，但对提升控制力极其重要。",
-        upgrade:"持续达5秒，每天2次，1周，低疲劳感 → 可升级",
+        name:"1.4 阶段 · 组合式",
+        state:"放松",
+        desc:"组合式前部收缩/扩展 + 组合式后部收缩 + 双向收缩/扩展。交替组合。",
+        upgrade:"每天2次，持续1周 -> 可升级",
         exercises:[
-          ex("组合式前部收缩",FRONT,"combo",[10,10],[3,5],null,"先5秒慢收缩→5秒保持→5秒释放→逆向5秒→5秒保持→5秒回正"),
-          ex("组合式前部扩展",FRONT,"combo",[10,10],[3,5],null,"先扩展BC肌开始，步骤反过来的组合式"),
-          ex("组合式后部收缩",REAR,"combo",[10,10],[3,5],null,"后部肌肉的组合式收缩"),
-          ex("双向收缩",COMBO,"bidirectional",[10,10],[3,5],null,"先收缩BC肌5秒→保持→加入收缩PCIC5秒→保持→同时释放"),
-          ex("双向扩展",COMBO,"bidirectional",[10,10],[3,5],null,"先扩展BC肌，同双向收缩的原理")
+          ex("前部组合：收缩BC->扩展BC",COMBO,"combo",[20,20],1,null,"BC肌前部组合训练"),
+          ex("后部组合：收缩PCIC->扩展PCIC",COMBO,"combo",[20,20],1,null,"PCIC肌后部组合训练"),
+          ex("双向组合：前部收缩+后部扩展 / 前部扩展+后部收缩",COMBO,"bidirectional",[20,20],1,null,"双向协调训练")
         ]
       },
       "1.5":{
-        name:"1.5 阶段 — 总和训练",
-        state:"松弛",
-        desc:"1.2 + 1.3 + 1.4 总和训练。",
-        upgrade:"每天2次，坚持1周（第一天做0.5），低疲劳感 → 等级1完成",
+        name:"1.5 阶段 · 总和训练",
+        state:"放松",
+        desc:"1.2+1.3+1.4的总和。全面考核综合能力。",
+        upgrade:"每天2次，持续1周 -> 等级1完成，进入等级2",
         exercises:[
-          ex("1.2 阶段总和",COMBO,"round",[1,1],0,null,"1.2三组动作各做1轮"),
-          ex("1.3 阶段总和",COMBO,"round",[1,1],0,null,"1.3四组动作各做1轮"),
-          ex("1.4 阶段总和",COMBO,"round",[1,1],0,null,"1.4五组动作各做1轮")
+          ex("1.2 阶段总和",COMBO,"round",[1,1],0,null,"1.2两组动作各做1轮"),
+          ex("1.3 阶段总和",COMBO,"round",[1,1],0,null,"1.3两组动作各做1轮"),
+          ex("1.4 阶段总和",COMBO,"round",[1,1],0,null,"1.4三组动作各做1轮")
         ]
       }
     }
   },
   "2":{
     name:"等级2 · 高级",
-    desc:"侧重稳定性和条件性训练。第一天做0.5，第二天做1.5，其余做等级2内容。",
+    desc:"侧重稳定性与条件性",
     stages:{
       "2.1":{
-        name:"2.1 阶段 — 20秒持续",
-        state:"松弛",
-        desc:"20秒中高力度稳定持续收缩。质量重于数量。扩展注意彻底放松拉伸。",
-        upgrade:"每天2次，持续数天（前两天给0.5和1.5），低疲劳感 → 可升级",
+        name:"2.1 阶段 · 持续收缩扩展",
+        state:"稳定",
+        desc:"10秒持续收缩/扩展 x 5次。巩固长时间控制能力。",
+        upgrade:"每天2次，持续1周 -> 可升级",
         exercises:[
-          ex("20秒持续收缩 BC 肌",FRONT,"hold",[5,5],[20,20],null,"中高力度稳定持续20秒"),
-          ex("20秒持续扩展 BC 肌",FRONT,"hold",[5,5],[20,20],null,"彻底放松拉伸20秒"),
-          ex("20秒持续收缩 PC 肌 + IC 肌",REAR,"hold",[5,5],[20,20],null,"中高力度稳定持续20秒"),
-          ex("20秒持续扩展 PC 肌 + IC 肌",REAR,"hold",[5,5],[20,20],null,"彻底放松拉伸20秒")
+          ex("持续收缩 BC 肌",FRONT,"hold",[5,5],10,["放松","收缩10秒","放松"],"10秒保持"),
+          ex("持续扩展 BC 肌",FRONT,"hold",[5,5],10,["放松","扩展10秒","放松"],"10秒保持"),
+          ex("持续收缩 PC 肌+ IC 肌",REAR,"hold",[5,5],10,["放松","收缩10秒","放松"],"10秒保持"),
+          ex("持续扩展 PC 肌+ IC 肌",REAR,"hold",[5,5],10,["放松","扩展10秒","放松"],"10秒保持")
         ]
       },
       "2.2":{
-        name:"2.2 阶段 — 递增式",
-        state:"松弛",
-        desc:"递增式收缩：每5秒增加一次力量。中等→大力量→更大力量→放松。",
-        upgrade:"每天2次，持续1周（前两天做0.5和1.5），力量明显增加 → 全部完成！",
+        name:"2.2 阶段 · 递进式收缩",
+        state:"稳定",
+        desc:"递进式收缩（每5秒增加力度）。分层级感受肌肉力量。",
+        upgrade:"每天2次，持续1周 -> 等级2完成",
         exercises:[
-          ex("递增式收缩 BC 肌",FRONT,"progressive",[5,5],[20,20],["中度","大","更大","放松"],"每5秒增加力度：中→大→更大→放松"),
-          ex("递增式扩展 BC 肌",FRONT,"progressive",[5,5],[20,20],["中度","大","更大","放松"],"每5秒增加力度：中→大→更大→放松"),
-          ex("递增式收缩 PC 肌 + IC 肌",REAR,"progressive",[5,5],[20,20],["中度","大","更大","放松"],"每5秒增加力度：中→大→更大→放松"),
-          ex("递增式扩展 PC 肌 + IC 肌",REAR,"progressive",[5,5],[20,20],["中度","大","更大","放松"],"每5秒增加力度：中→大→更大→放松")
+          ex("递进式 BC 肌",FRONT,"progressive",[5,5],20,["轻微收缩","中等收缩","最大收缩","逐渐放松"],"每5秒递增力度"),
+          ex("递进式 PC 肌+ IC 肌",REAR,"progressive",[5,5],20,["轻微收缩","中等收缩","最大收缩","逐渐放松"],"每5秒递增力度")
         ]
       }
     }
   }
+};var state={
+  level:0,stage:"0.1",exerciseIdx:0,reps:0,completed:{},
+  dailyGoal:2,todaySessions:0,sessionDate:"",trainingLog:[],plan:null
 };
-
-let state = {level:0,stage:"0.1",exerciseIdx:0,reps:0,completed:{},dailyGoal:2,todaySessions:0,sessionDate:"",trainingLog:[]};
+var currentView="train";
+var timerRunning=false,timerInterval=null,timerSeconds=0,timerPhaseIdx=0,toastTimer=null;
 
 function loadState(){
   try{const s=localStorage.getItem("pelvic_state");
-    if(s){const p=JSON.parse(s);Object.assign(state,p)}if(!state.dailyGoal)state.dailyGoal=2
-if(!state.sessionDate)state.sessionDate=""
-if(!state.trainingLog)state.trainingLog=[]
+    if(s){const p=JSON.parse(s);Object.assign(state,p)}
+    if(!state.dailyGoal)state.dailyGoal=2
+    if(!state.sessionDate)state.sessionDate=""
+    if(!state.trainingLog)state.trainingLog=[]
+    if(!state.plan)state.plan=null
   }catch(e){}
 }
 function saveState(){
   localStorage.setItem("pelvic_state",JSON.stringify({
-    level:state.level,stage:state.stage,completed:state.completed,dailyGoal:state.dailyGoal,todaySessions:state.todaySessions,sessionDate:state.sessionDate,trainingLog:state.trainingLog
+    level:state.level,stage:state.stage,completed:state.completed,dailyGoal:state.dailyGoal,
+    todaySessions:state.todaySessions,sessionDate:state.sessionDate,trainingLog:state.trainingLog,
+    plan:state.plan
   }));
 }
-
-let toastTimer;
 function toast(msg){
-  const el=document.getElementById("toast");el.textContent=msg;
-  el.classList.add("show");clearTimeout(toastTimer);
-  toastTimer=setTimeout(()=>el.classList.remove("show"),2000);
+  var el=document.getElementById("toast");
+  if(!el)return;
+  el.textContent=msg;el.classList.add("show");
+  clearTimeout(toastTimer);toastTimer=setTimeout(function(){el.classList.remove("show")},2000);
 }
-
-function calcStreak(){
-  let streak=0;const d=new Date();
-  while(true){
-    const ds=d.toDateString();
-    const has=Object.values(state.completed).some(c=>c.lastDate===ds&&c.done);
-    if(has){streak++;d.setDate(d.getDate()-1)}else break;
-  }
-  return streak;
-}
-
-let timerInterval=null;
-let timerSeconds=0;
-let timerRunning=false;
-let timerPhaseIdx=0;
 
 function render(){
-  const lv=state.level;
-  const stageId=state.stage;
-  const stageData=DATA[String(lv)].stages[stageId];
-  if(!stageData)return;
+  var lv=state.level,stageId=state.stage,stageData=DATA[String(lv)].stages[stageId];
+  if(!stageData){var s=Object.keys(DATA[String(lv)].stages);state.stage=s[0];stageId=s[0];stageData=DATA[String(lv)].stages[stageId];}
 
-  document.getElementById("levelTabs").innerHTML=
-    LEVELS.map(l=>'<button class="level-tab'+(l===lv?' active':'')+'" data-level="'+l+'">等级'+l+'</button>').join("");
-
-  const stages=Object.keys(DATA[String(lv)].stages);
-  const barEl=document.getElementById("stageBar");
-  barEl.innerHTML=stages.map(s=>{
-    let cls="stage-chip";
-    if(s===stageId)cls+=" active";
-    if(state.completed[s]?.done)cls+=" completed";
-    return '<button class="'+cls+'" data-stage="'+s+'">'+s.replace(".","-")+'</button>';
-  }).join("");
-
-  const today=new Date().toDateString();
-  var todaySessions=state.todaySessions;if(state.sessionDate!==today){todaySessions=0;state.todaySessions=0;state.sessionDate=today}
-  const streak=calcStreak();
-  document.getElementById("sessionStats").innerHTML=
-    '<div class="stat-card"><div class="stat-value">'+todaySessions+'</div><div class="stat-label">今日训练</div></div>'+
-    '<div class="stat-card"><div class="stat-value">'+streak+'</div><div class="stat-label">连续天数</div></div>'+
-    '<div class="stat-card"><div class="stat-value">'+stageId+'</div><div class="stat-label">当前阶段</div></div>';
-
-  document.getElementById("stageDesc").textContent="["+stageData.state+"] "+stageData.desc;
-
-  const exArr=stageData.exercises;
-  const ei=Math.min(state.exerciseIdx,exArr.length-1);
-  const cur=exArr[ei];
-  const target=cur.targetReps[1];
-  const pct=Math.min(100,Math.round(state.reps/target*100));
-
-  let timerHTML="";
-  if(cur.holdSec[0]>0&&(cur.type==="hold"||cur.type==="three-stage"||cur.type==="progressive")){
-    let phasesHTML="";
-    if(cur.phases){
-      let dots="";
-      for(let i=0;i<cur.phases.length;i++){
-        dots+='<div class="phase-dot" data-pi="'+i+'"></div>';
-      }
-      phasesHTML='<div class="phase-indicators" id="phaseIndicators">'+dots+'</div>';
-    }
-    timerHTML='<div class="timer-area">'+
-      '<div class="timer-display" id="timerDisplay">00:00</div>'+
-      '<div class="timer-phase" id="timerPhase">准备开始</div>'+
-      phasesHTML+
-      '<div class="timer-sub mt-8">目标: '+cur.holdSec[0]+'-'+cur.holdSec[1]+'秒</div>'+
-      '<div class="action-row mt-8">'+
-        '<button class="btn btn-primary btn-small" id="timerStart">开始</button>'+
-        '<button class="btn btn-secondary btn-small" id="timerPause">暂停</button>'+
-        '<button class="btn btn-ghost btn-small" id="timerReset">重置</button>'+
-      '</div></div>';
+  // Level tabs
+  var lt=document.getElementById("levelTabs");
+  lt.innerHTML="";
+  for(var i=0;i<=2;i++){
+    var lvName=i===0?"0":(i===1?"1":"2");
+    var btn=document.createElement("button");
+    btn.className="level-tab"+(i===lv?" active":"");
+    btn.textContent="等级"+lvName;
+    btn.dataset.level=i;
+    btn.addEventListener("click",function(){
+      var l=parseInt(this.dataset.level);
+      if(l===state.level)return;
+      state.level=l;
+      var s=Object.keys(DATA[String(l)].stages);
+      state.stage=s[0];state.exerciseIdx=0;state.reps=0;
+      stopTimer();saveState();render();
+    });
+    lt.appendChild(btn);
   }
 
-  let typeLabel="";
+  // Stage bar
+  var sb=document.getElementById("stageBar");
+  var stages=Object.keys(DATA[String(lv)].stages);
+  sb.innerHTML=stages.map(function(s){
+    var sc=state.completed[s];
+    var cls="stage-chip"+(s===stageId?" active":"")+(sc&&sc.done?" completed":"");
+    return '<button class="'+cls+'" data-stage="'+s+'">'+DATA[String(lv)].stages[s].name.split(" ")[0]+'</button>';
+  }).join("");
+  document.querySelectorAll(".stage-chip").forEach(function(el){
+    el.addEventListener("click",function(){
+      state.stage=this.dataset.stage;state.exerciseIdx=0;state.reps=0;
+      stopTimer();saveState();render();
+    });
+  });
+
+  // Session stats
+  var ss=document.getElementById("sessionStats");
+  var todayStr=new Date().toDateString();
+  if(state.sessionDate!==todayStr){state.sessionDate=todayStr;state.todaySessions=0;saveState();}
+  ss.innerHTML='<div class="stat-card"><div class="stat-value">'+state.todaySessions+'/'+state.dailyGoal+'</div><div class="stat-label">今日训练</div></div>'+
+    '<div class="stat-card"><div class="stat-value">'+state.trainingLog.length+'</div><div class="stat-label">总训练次数</div></div>';
+
+  // Stage description
+  document.getElementById("stageDesc").textContent=stageData.desc;
+
+  // Exercise area
+  var ei=state.exerciseIdx,exArr=stageData.exercises,cur=exArr[ei];
+  var target=cur.type==="round"?1:cur.targetReps[1],pct=Math.min(100,Math.round(state.reps/target*100));
+  var done=false;
+  if(cur.type==="round")done=state.reps>=1;else done=state.reps>=target;
+
+  var typeLabel="";
   if(cur.type==="contract")typeLabel="收缩";
   else if(cur.type==="expand")typeLabel="扩展";
   else if(cur.type==="hold")typeLabel="持续";
   else if(cur.type==="three-stage")typeLabel="三段式";
   else if(cur.type==="combo"||cur.type==="bidirectional")typeLabel="组合式";
-  else if(cur.type==="progressive")typeLabel="递增";
+  else if(cur.type==="progressive")typeLabel="递进式";
   else typeLabel="循环";
 
-  let done=false;
-  if(cur.type==="round")done=state.reps>=1;
-  else done=state.reps>=target;
+  var timerHTML="";
+  if(cur.holdSec&&cur.holdSec[1]>0){
+    var phasesHTML="";
+    if(cur.phases&&(cur.type==="three-stage"||cur.type==="progressive")){
+      phasesHTML='<div class="phase-indicators">'+cur.phases.map(function(p,i){return '<div class="phase-dot" id="pd_'+ei+'_'+i+'"></div>';}).join("")+'</div>';
+    }
+    timerHTML='<div class="timer-area"><div class="timer-display" id="timerDisplay">00:00</div>'+
+      (cur.phases?'<div class="timer-phase" id="timerPhase">'+cur.phases[0]+'</div>':'')+
+      '<div class="timer-sub">目标 '+cur.holdSec[1]+'秒</div>'+phasesHTML+
+      '<div class="action-row" style="margin-top:8px">'+
+      '<button class="btn btn-primary btn-small" id="timerStart">开始</button>'+
+      '<button class="btn btn-secondary btn-small" id="timerPause">暂停</button>'+
+      '<button class="btn btn-ghost btn-small" id="timerReset">重置</button>'+
+      '</div></div>';
+  }
 
   document.getElementById("exerciseArea").innerHTML=
     '<div class="exercise-card">'+
-      '<div class="exercise-name">'+cur.name+'</div>'+
-      '<div class="exercise-meta">'+
-        '<span class="muscle-badge '+cur.muscle.badge+'">'+cur.muscle.label+'</span>'+typeLabel+
-      '</div>'+
-      (cur.desc?'<div style="font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.5">'+cur.desc+'</div>':"")+
-      '<div class="progress-area">'+
-        '<div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:'+pct+'%"></div></div>'+
-        '<div class="progress-text">'+state.reps+'/'+target+'</div>'+
-      '</div>'+
-      '<div class="action-row">'+
-        '<button class="btn btn-primary" id="btnRep">'+(done?"完成！":"+1 完成一次")+'</button>'+
-        '<button class="btn btn-ghost" id="btnResetRep" style="flex:0;padding:14px 16px">&#x21BA;</button>'+
-      '</div>'+
-      timerHTML+
-      '<div class="nav-row">'+
-        '<button class="nav-btn" id="btnPrev"'+(ei===0?" disabled":"")+'>&#x25C0; 上一个</button>'+
-        '<button class="nav-btn" id="btnNext">'+(ei>=exArr.length-1?"完成训练 &#x2713;":"下一个 &#x25B6;")+'</button>'+
-      '</div>'+
+    '<div class="exercise-name">'+cur.name+'</div>'+
+    '<div class="exercise-meta"><span class="muscle-badge '+cur.muscle.badge+'">'+cur.muscle.label+'</span>'+typeLabel+'</div>'+
+    (cur.desc?'<div style="font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.5">'+cur.desc+'</div>':"")+
+    '<div class="progress-area"><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:'+pct+'%"></div></div><div class="progress-text">'+state.reps+'/'+target+'</div></div>'+
+    '<div class="action-row"><button class="btn btn-primary" id="btnRep">'+(done?"完成!":"+1 完成一次")+'</button><button class="btn btn-ghost" id="btnResetRep" style="flex:0;padding:14px 16px">&#x21BA;</button></div>'+
+    timerHTML+
+    '<div class="nav-row"><button class="nav-btn" id="btnPrev"'+(ei===0?' disabled':'')+'>&#x25C0; 上一个</button><button class="nav-btn" id="btnNext">'+(ei>=exArr.length-1?"完成训练 &#x2713;":"下一个 &#x25B6;")+'</button></div>'+
     '</div>';
 
-  const sc=state.completed[stageId];
-  const stageComplete=sc&&sc.done;
-  document.getElementById("upgradePanel").innerHTML=
-    '<h3>'+(stageComplete?"阶段已完成":"升级条件")+'</h3>'+
-    '<p class="'+(stageComplete?"upgrade-done":"")+'">'+stageData.upgrade+(stageComplete?" \u2705":"")+'</p>';
-
-  bindEvents(stageId,exArr.length,stageData);
-}
-
-function bindEvents(stageId,totalEx,stageData){
-  document.querySelectorAll(".level-tab").forEach(el=>{
-    el.addEventListener("click",()=>{
-      const lv=parseInt(el.dataset.level);
-      if(lv===state.level)return;
-      state.level=lv;
-      const stages=Object.keys(DATA[String(lv)].stages);
-      state.stage=stages[0];state.exerciseIdx=0;state.reps=0;
+  // Bind events
+  document.querySelectorAll(".level-tab").forEach(function(el){
+    el.addEventListener("click",function(){
+      var l=parseInt(this.dataset.level);
+      if(l===state.level)return;
+      state.level=l;
+      var s=Object.keys(DATA[String(l)].stages);
+      state.stage=s[0];state.exerciseIdx=0;state.reps=0;
       stopTimer();saveState();render();
     });
   });
-  document.querySelectorAll(".stage-chip").forEach(el=>{
-    el.addEventListener("click",()=>{
-      state.stage=el.dataset.stage;state.exerciseIdx=0;state.reps=0;
+  document.querySelectorAll(".stage-chip").forEach(function(el){
+    el.addEventListener("click",function(){
+      state.stage=this.dataset.stage;state.exerciseIdx=0;state.reps=0;
       stopTimer();saveState();render();
     });
   });
 
-  const btnRep=document.getElementById("btnRep");
-  if(btnRep){
-    btnRep.addEventListener("click",()=>{
-      const ex=stageData.exercises[state.exerciseIdx];
-      const target=ex.targetReps[1];
-      if(state.reps<target){
-        state.reps++;
-        if(state.reps>=target)toast("动作完成！");
-        saveState();render();
-      }
-    });
-  }
+  var btnRep=document.getElementById("btnRep");
+  if(btnRep)btnRep.addEventListener("click",function(){
+    var ex=stageData.exercises[state.exerciseIdx];
+    var target=ex.targetReps[1];
+    if(state.reps<target){
+      state.reps++;
+      if(state.reps>=target)toast("动作完成！");
+      saveState();render();
+    }
+  });
 
-  const btnReset=document.getElementById("btnResetRep");
-  if(btnReset)btnReset.addEventListener("click",()=>{state.reps=0;stopTimer();saveState();render();});
+  var btnReset=document.getElementById("btnResetRep");
+  if(btnReset)btnReset.addEventListener("click",function(){state.reps=0;stopTimer();saveState();render();});
 
-  const btnPrev=document.getElementById("btnPrev");
-  if(btnPrev)btnPrev.addEventListener("click",()=>{
+  var btnPrev=document.getElementById("btnPrev");
+  if(btnPrev)btnPrev.addEventListener("click",function(){
     if(state.exerciseIdx>0){state.exerciseIdx--;state.reps=0;stopTimer();saveState();render();}
   });
 
-  const btnNext=document.getElementById("btnNext");
-  if(btnNext)btnNext.addEventListener("click",()=>{
-    if(state.exerciseIdx>=totalEx-1){
+  var btnNext=document.getElementById("btnNext");
+  if(btnNext)btnNext.addEventListener("click",function(){
+    if(state.exerciseIdx>=exArr.length-1){
       if(!state.completed[stageId])state.completed[stageId]={done:false,totalSessions:0,lastDate:""};
-      const c=state.completed[stageId];
+      var c=state.completed[stageId];
       c.done=true;c.totalSessions=(c.totalSessions||0)+1;c.lastDate=new Date().toDateString();
       var td=new Date().toDateString();if(state.sessionDate!==td){state.sessionDate=td;state.todaySessions=0}state.todaySessions++;
-      state.trainingLog.push({date:td,time:new Date().toLocaleTimeString(),level:state.level,stage:stageId,stageName:DATA[String(state.level)].stages[stageId].name});
+      state.trainingLog.push({date:td,time:new Date().toLocaleTimeString(),level:state.level,stage:stageId,stageName:stageData.name});
       if(state.trainingLog.length>500)state.trainingLog=state.trainingLog.slice(-500);
-      const stages=Object.keys(DATA[String(state.level)].stages);
-      const idx=stages.indexOf(stageId);
+      var stages=Object.keys(DATA[String(state.level)].stages);
+      var idx=stages.indexOf(stageId);
       if(idx<stages.length-1){state.stage=stages[idx+1];state.exerciseIdx=0;}
       else{
-        const nlv=state.level+1;
-        if(nlv<=2){state.level=nlv;
-          const ns=Object.keys(DATA[String(nlv)].stages);state.stage=ns[0];state.exerciseIdx=0;}
+        var nlv=state.level+1;
+        if(nlv<=2){state.level=nlv;var ns=Object.keys(DATA[String(nlv)].stages);state.stage=ns[0];state.exerciseIdx=0;}
       }
       state.reps=0;stopTimer();toast("阶段完成！已进入下一阶段");saveState();render();
     }else{state.exerciseIdx++;state.reps=0;stopTimer();saveState();render();}
   });
 
-  bindTimer(stageData);
-}
+  // Timer binding
+  var btnStart=document.getElementById("timerStart");
+  if(btnStart){
+    btnStart.addEventListener("click",function(){if(!timerRunning)startTimer(cur);});
+    var btnPause=document.getElementById("timerPause");
+    if(btnPause)btnPause.addEventListener("click",function(){if(timerRunning)pauseTimer();});
+    var btnResetT=document.getElementById("timerReset");
+    if(btnResetT)btnResetT.addEventListener("click",function(){stopTimer();updateDisplay(0,cur);});
+  }
 
-function bindTimer(stageData){
-  const ex=stageData.exercises[state.exerciseIdx];
-  if(!ex||ex.holdSec[0]<=0)return;
-  const btnStart=document.getElementById("timerStart");
-  const btnPause=document.getElementById("timerPause");
-  const btnReset=document.getElementById("timerReset");
-  if(!btnStart)return;
-  btnStart.addEventListener("click",()=>{if(!timerRunning)startTimer(ex);});
-  btnPause.addEventListener("click",()=>{if(timerRunning)pauseTimer();});
-  btnReset.addEventListener("click",()=>{stopTimer();updateDisplay(0,ex);});
+  // Upgrade panel
+  var sc=state.completed[stageId];
+  var stageComplete=sc&&sc.done;
+  var recentSessions=0;
+  var d=new Date();
+  for(var i=0;i<7;i++){
+    var ds=d.toDateString();
+    var vals=Object.values(state.completed);
+    for(var vi=0;vi<vals.length;vi++){
+      if(vals[vi].lastDate===ds&&vals[vi].done)recentSessions++;
+    }
+    d.setDate(d.getDate()-1);
+  }
+  var dots="";
+  for(var di=0;di<7;di++){
+    var dotCls="upgrade-dot";
+    if(di<recentSessions)dotCls+=" done";
+    if(di===recentSessions&&!stageComplete)dotCls+=" today";
+    dots+='<div class="'+dotCls+'"></div>';
+  }
+  document.getElementById("upgradePanel").innerHTML=
+    '<h3>'+(stageComplete?"阶段已完成":"升级条件")+'</h3>'+
+    '<p class="'+(stageComplete?"upgrade-done":"")+'">'+stageData.upgrade+(stageComplete?" \u2705":"")+'</p>'+
+    (!stageComplete?'<div class="upgrade-progress">'+dots+'</div><div style="font-size:12px;color:var(--text3);margin-top:4px">本周训练: '+recentSessions+'/7天</div>':"");
 }
 
 function startTimer(ex){
   if(timerRunning)return;
   timerRunning=true;timerPhaseIdx=0;
-  const holdTarget=ex.holdSec[1];
-  const is3=ex.type==="three-stage";
-  const isP=ex.type==="progressive";
-  const phaseLen=Math.round(holdTarget/(ex.phases?ex.phases.length:1));
-  timerInterval=setInterval(()=>{
+  timerSeconds=0;
+  timerInterval=setInterval(function(){
     timerSeconds++;
     updateDisplay(timerSeconds,ex);
-    if((is3||isP)&&ex.phases){
-      const plen=Math.round(holdTarget/ex.phases.length);
-      const np=Math.min(Math.floor(timerSeconds/plen),ex.phases.length-1);
+    if(ex.phases&&(ex.type==="three-stage"||ex.type==="progressive")){
+      var plen=Math.round(ex.holdSec[1]/ex.phases.length);
+      var np=Math.min(Math.floor(timerSeconds/plen),ex.phases.length-1);
       if(np!==timerPhaseIdx){
         timerPhaseIdx=np;
-        const dots=document.querySelectorAll(".phase-dot");
-        dots.forEach((d,i)=>{
-          d.className="phase-dot"+(i<timerPhaseIdx?" done":"")+(i===timerPhaseIdx?" active":"");
-        });
-        const pe=document.getElementById("timerPhase");
+        var dots=document.querySelectorAll(".phase-dot");
+        dots.forEach(function(d,i){d.className="phase-dot"+(i<timerPhaseIdx?" done":"")+(i===timerPhaseIdx?" active":"");});
+        var pe=document.getElementById("timerPhase");
         if(pe)pe.textContent=ex.phases[timerPhaseIdx];
       }
     }
-    if(timerSeconds>=holdTarget){
-      stopTimer();updateDisplay(holdTarget,ex);toast("持续时间达标！");
+    if(timerSeconds>=ex.holdSec[1]){
+      stopTimer();updateDisplay(ex.holdSec[1],ex);toast("保持时间达标！");
       if(state.reps<ex.targetReps[1]){state.reps++;saveState();render();}
     }
   },1000);
 }
 function pauseTimer(){timerRunning=false;if(timerInterval){clearInterval(timerInterval);timerInterval=null;}}
-function stopTimer(){timerRunning=false;if(timerInterval){clearInterval(timerInterval);timerInterval=null;}timerSeconds=0;}
+function stopTimer(){timerRunning=false;if(timerInterval){clearInterval(timerInterval);timerInterval=null;}timerSeconds=0;timerPhaseIdx=0;}
+var _origUpdate = updateDisplay;
 function updateDisplay(s,ex){
-  const d=document.getElementById("timerDisplay");
+  var d=document.getElementById("timerDisplay");
   if(!d)return;
   d.textContent=String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");
 }
 
+// Load and initial render
 loadState();
-const s0=Object.keys(DATA[String(state.level)].stages);
+var s0=Object.keys(DATA[String(state.level)].stages);
 if(!state.stage||!s0.includes(state.stage))state.stage=s0[0];
 saveState();
-render();
+render();// ===== DAILY TRAINING PLAN =====
+function getPlanRecommendedStage() {
+  if (!state.plan || !state.plan.weeks) return null;
+  var weeks = state.plan.weeks;
+  var done = 0, weekIdx = 0;
+  for (var i = 0; i < weeks.length; i++) {
+    if (weeks[i].status === "done") { done++; weekIdx = i + 1; }
+    else { weekIdx = i; break; }
+  }
+  if (done === weeks.length) weekIdx = weeks.length;
+  if (weekIdx >= weeks.length) return null;
+  return weeks[weekIdx].stage;
+}
 
-// ===== DAILY TRAINING PLAN =====
 function getDayOfWeekPlan() {
+  // If a plan exists, use plan's recommendation
+  if (state.plan && state.plan.weeks) {
+    var recStage = getPlanRecommendedStage();
+    if (recStage) {
+      var recLv = -1;
+      for (var lv = 0; lv <= 2; lv++) {
+        if (DATA[String(lv)].stages[recStage]) { recLv = lv; break; }
+      }
+      var recName = (recLv >= 0 && DATA[String(recLv)].stages[recStage]) ? DATA[String(recLv)].stages[recStage].name : recStage;
+      var weekNum = 1;
+      for (var i = 0; i < state.plan.weeks.length; i++) {
+        if (state.plan.weeks[i].status !== "done") { weekNum = state.plan.weeks[i].week; break; }
+      }
+      return {stage: recStage, label: "第" + weekNum + "周推荐", desc: recName};
+    }
+  }
   var lv = state.level;
   var today = new Date().getDay();
-  var stages = Object.keys(DATA[String(lv)].stages);
   if (lv === 0) {
     return {stage: state.stage, label: "继续当前阶段", desc: DATA["0"].stages[state.stage] ? DATA["0"].stages[state.stage].name : ""};
   }
@@ -714,7 +773,7 @@ function renderProgressLevels() {
       else if (s === state.stage && lv === state.level) cls = "stage-current";
       stageHtml += '<div class="' + cls + '">' + s + (cls === "stage-done" ? " \u2713" : "") + "</div>";
     }
-    html += '<div class="progress-level-card"><h4>\u7b49\u7ea7' + lv + "</h4><div>" + stageHtml + "</div></div>";
+    html += '<div class="progress-level-card"><h4>等级' + lv + "</h4><div>" + stageHtml + "</div></div>";
   }
   el.innerHTML = html;
 }
@@ -741,89 +800,13 @@ function updateSettingStages() {
   }
   sel.innerHTML = html;
 }
-
-function switchView(v) {
-  currentView = v;
-  document.querySelectorAll(".view-toggle-btn").forEach(function(b) {
-    b.classList.toggle("active", b.dataset.view === v);
-  });
-  document.getElementById("statsView").classList.toggle("hidden", v !== "stats");
-  document.getElementById("dailyPlan").classList.toggle("hidden", v === "stats");
-  document.getElementById("stageBar").classList.toggle("hidden", v === "stats");
-  document.getElementById("sessionStats").classList.toggle("hidden", v === "stats");
-  document.getElementById("stageDesc").classList.toggle("hidden", v === "stats");
-  document.getElementById("exerciseArea").classList.toggle("hidden", v === "stats");
-  document.getElementById("upgradePanel").classList.toggle("hidden", v === "stats");
-  document.getElementById("progressLevels").classList.toggle("hidden", v === "stats");
-  if (v === "stats") renderStatsView();
-}
-var heatmapOffset = 0;
-function renderStatsView() { renderHeatmap(); renderStatsCards(); renderLevelProgressBars(); renderTrainingLog(); }
-function getDaysInMonth(y,m){return new Date(y,m+1,0).getDate()}
-function getFirstDayOfMonth(y,m){return new Date(y,m,1).getDay()}
-function renderHeatmap() {
-  var now=new Date(),y=now.getFullYear(),m=now.getMonth()+heatmapOffset;
-  while(m<0){m+=12;y--}while(m>11){m-=12;y++}
-  var months=["1\u6708","2\u6708","3\u6708","4\u6708","5\u6708","6\u6708","7\u6708","8\u6708","9\u6708","10\u6708","11\u6708","12\u6708"];
-  document.getElementById("heatmapMonthLabel").textContent=y+"\u5e74 "+months[m];
-  var dim=getDaysInMonth(y,m),fd=getFirstDayOfMonth(y,m),grid=document.getElementById("heatmapGrid");
-  var html="",dow=["\u65e5","\u4e00","\u4e8c","\u4e09","\u56db","\u4e94","\u516d"];
-  for(var i=0;i<7;i++)html+='<div class="heatmap-label">'+dow[i]+"</div>";
-  for(var i=0;i<fd;i++)html+="<div></div>";
-  var ts=now.toDateString(),isCM=(heatmapOffset===0);
-  var dc={};for(var li=0;li<state.trainingLog.length;li++){var d=state.trainingLog[li].date;if(dc[d]===undefined)dc[d]=0;dc[d]++;}
-  for(var day=1;day<=dim;day++){
-    var dobj=new Date(y,m,day),ds=dobj.toDateString(),cnt=dc[ds]||0,cls="heatmap-cell";
-    if(cnt>0){if(cnt<=1)cls+=" l1";else if(cnt<=2)cls+=" l2";else if(cnt<=3)cls+=" l3";else cls+=" l4"}
-    if(isCM&&ds===ts)cls+=" today";
-    html+='<div class="'+cls+'" title="'+(y+"/"+(m+1)+"/"+day)+": "+cnt+"\u6b21\u8bad\u7ec3"+'"></div>';
-  }
-  grid.innerHTML=html;
-}
-function heatmapMonth(delta){heatmapOffset+=delta;renderHeatmap()}
-function renderStatsCards(){
-  var total=state.trainingLog.length,ud={};
-  for(var i=0;i<state.trainingLog.length;i++)ud[state.trainingLog[i].date]=true;
-  var dt=Object.keys(ud).length,streak=calcStreak(),today=new Date().toDateString(),tc=0;
-  for(var i=0;i<state.trainingLog.length;i++)if(state.trainingLog[i].date===today)tc++;
-  var ws=0;var d=new Date();
-  for(var i=0;i<7;i++){var ds=d.toDateString();for(var li=0;li<state.trainingLog.length;li++){if(state.trainingLog[li].date===ds){ws++;break}}d.setDate(d.getDate()-1)}
-  document.getElementById("statsGrid").innerHTML=
-    '<div class="stats-card highlight"><div class="num accent">'+total+'</div><div class="lbl">\u7ecf\u8bad\u7ec3\u6b21\u6570</div></div>'+
-    '<div class="stats-card"><div class="num green">'+streak+'</div><div class="lbl">\u8fde\u7eed\u5929\u6570</div><div class="sub">\u5f53\u524d</div></div>'+
-    '<div class="stats-card"><div class="num">'+dt+'</div><div class="lbl">\u8bad\u7ec3\u5929\u6570</div><div class="sub">\u7d2f\u8ba1</div></div>'+
-    '<div class="stats-card"><div class="num orange">'+ws+'/7</div><div class="lbl">\u672c\u5468\u8bad\u7ec3</div><div class="sub">'+Math.round(ws/7*100)+'%</div></div>';
-}
-function renderLevelProgressBars(){
-  var el=document.getElementById("levelProgressCards");if(!el)return;
-  var html='<div class="stats-grid">';
-  for(var lv=0;lv<=2;lv++){
-    var stages=Object.keys(DATA[String(lv)].stages),done=0;
-    for(var si=0;si<stages.length;si++){var sc=state.completed[stages[si]];if(sc&&sc.done)done++}
-    var pct=Math.round(done/stages.length*100);
-    html+='<div class="stats-card"><div class="num '+(pct>=100?"green":"")+'">'+done+"/"+stages.length+'</div>'+
-      '<div class="lbl">\u7b49\u7ea7'+lv+'</div>'+
-      '<div class="level-progress-bar"><div class="level-progress-fill '+(pct>=100?"complete":"")+'" style="width:'+pct+'%"></div></div>'+
-      '<div class="sub">'+pct+'%</div></div>';
-  }
-  el.innerHTML=html+'</div>';
-}
-function renderTrainingLog(){
-  var el=document.getElementById("trainingLog");if(!el)return;
-  if(state.trainingLog.length===0){el.innerHTML='<div class="log-empty">\u8fd8\u6ca1\u6709\u8bad\u7ec3\u8bb0\u5f55\n\u5b8c\u6210\u4e00\u6b21\u8bad\u7ec3\u540e\u4f1a\u51fa\u73b0\u5728\u8fd9\u91cc</div>';return}
-  var entries=state.trainingLog.slice(-50).reverse(),html="";
-  for(var i=0;i<entries.length;i++){var e=entries[i];
-    html+='<div class="log-item"><div class="left"><span class="date">'+e.date+" "+e.time+'</span><span class="stage-name">'+e.stageName+'</span></div><div class="badge">\u7b49\u7ea7'+e.level+'</div></div>'}
-  el.innerHTML=html;
-}
-function onDailyGoalChange(){
-  var val=parseInt(document.getElementById("settingDailyGoal").value);
-  state.dailyGoal=val;
+function onDailyGoalChange() {
+  var val = parseInt(document.getElementById("settingDailyGoal").value);
+  state.dailyGoal = val;
   saveState();
 }
-
 function resetAllProgress() {
-  if (!confirm("\u786e\u5b9a\u8981\u91cd\u7f6e\u6240\u6709\u8bad\u7ec3\u8fdb\u5ea6\u5417\uff1f\u6b64\u64cd\u4f5c\u4e0d\u53ef\u64a4\u9500\u3002")) return;
+  if (!confirm("确定要重置所有训练进度吗？此操作不可撤销。")) return;
   state.level = 0;
   var s0 = Object.keys(DATA["0"].stages);
   state.stage = s0[0];
@@ -833,93 +816,236 @@ function resetAllProgress() {
   saveState();
   closeSettings();
   render();
-  toast("\u8fdb\u5ea6\u5df2\u91cd\u7f6e");
+  toast("进度已重置");
 }
 
-// ===== ENHANCED UPGRADE =====
-function renderUpgradeEnhanced() {
-  var stageId = state.stage;
-  var stageData = DATA[String(state.level)].stages[stageId];
-  if (!stageData) return;
-  var sc = state.completed[stageId];
-  var el = document.getElementById("upgradePanel");
-  if (!el) return;
-  var recentSessions = 0;
-  var d = new Date();
-  for (var i = 0; i < 7; i++) {
-    var ds = d.toDateString();
-    var val = Object.values(state.completed);
-    for (var vi = 0; vi < val.length; vi++) {
-      if (val[vi].lastDate === ds && val[vi].done) recentSessions++;
+// ===== VIEW SWITCHING =====
+var heatmapOffset = 0;
+
+function switchView(v) {
+  currentView = v;
+  document.querySelectorAll(".view-toggle-btn").forEach(function(b) {
+    b.classList.toggle("active", b.dataset.view === v);
+  });
+  var isStats = v === "stats";
+  var isPlan = v === "plan";
+  document.getElementById("statsView").classList.toggle("hidden", !isStats);
+  document.getElementById("planView").classList.toggle("hidden", !isPlan);
+  document.getElementById("dailyPlan").classList.toggle("hidden", isStats || isPlan);
+  document.getElementById("stageBar").classList.toggle("hidden", isStats || isPlan);
+  document.getElementById("sessionStats").classList.toggle("hidden", isStats || isPlan);
+  document.getElementById("stageDesc").classList.toggle("hidden", isStats || isPlan);
+  document.getElementById("exerciseArea").classList.toggle("hidden", isStats || isPlan);
+  document.getElementById("upgradePanel").classList.toggle("hidden", isStats || isPlan);
+  document.getElementById("progressLevels").classList.toggle("hidden", isStats || isPlan);
+  if (isStats) renderStatsView();
+  if (isPlan) renderPlanView();
+}
+
+function renderStatsView() { renderHeatmap(); renderStatsCards(); renderLevelProgressBars(); renderTrainingLog(); }
+
+function getDaysInMonth(y,m){return new Date(y,m+1,0).getDate()}
+function getFirstDayOfMonth(y,m){return new Date(y,m,1).getDay()}
+
+function renderHeatmap() {
+  var now=new Date(),y=now.getFullYear(),m=now.getMonth()+heatmapOffset;
+  while(m<0){m+=12;y--}while(m>11){m-=12;y++}
+  var months=["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"];
+  document.getElementById("heatmapMonthLabel").textContent=y+"年 "+months[m];
+  var dim=getDaysInMonth(y,m),fd=getFirstDayOfMonth(y,m),grid=document.getElementById("heatmapGrid");
+  var html="",dow=["日","一","二","三","四","五","六"];
+  for(var i=0;i<7;i++)html+='<div class="heatmap-label">'+dow[i]+"</div>";
+  for(var i=0;i<fd;i++)html+="<div></div>";
+  var ts=now.toDateString(),isCM=(heatmapOffset===0);
+  var dc={};for(var li=0;li<state.trainingLog.length;li++){var d=state.trainingLog[li].date;if(dc[d]===undefined)dc[d]=0;dc[d]++;}
+  for(var day=1;day<=dim;day++){
+    var dobj=new Date(y,m,day),ds=dobj.toDateString(),cnt=dc[ds]||0,cls="heatmap-cell";
+    if(cnt>0){if(cnt<=1)cls+=" l1";else if(cnt<=2)cls+=" l2";else if(cnt<=3)cls+=" l3";else cls+=" l4"}
+    if(isCM&&ds===ts)cls+=" today";
+    html+='<div class="'+cls+'" title="'+(y+"/"+(m+1)+"/"+day)+": "+cnt+"次训练"+'"></div>';
+  }
+  grid.innerHTML=html;
+}
+function heatmapMonth(delta){heatmapOffset+=delta;renderHeatmap()}
+
+function renderStatsCards(){
+  var total=state.trainingLog.length,ud={};
+  for(var i=0;i<state.trainingLog.length;i++)ud[state.trainingLog[i].date]=true;
+  var dt=Object.keys(ud).length,streak=calcStreak(),today=new Date().toDateString(),tc=0;
+  for(var i=0;i<state.trainingLog.length;i++)if(state.trainingLog[i].date===today)tc++;
+  var ws=0;var d=new Date();
+  for(var i=0;i<7;i++){var ds=d.toDateString();for(var li=0;li<state.trainingLog.length;li++){if(state.trainingLog[li].date===ds){ws++;break}}d.setDate(d.getDate()-1)}
+  document.getElementById("statsGrid").innerHTML=
+    '<div class="stats-card highlight"><div class="num accent">'+total+'</div><div class="lbl">总训练次数</div></div>'+
+    '<div class="stats-card"><div class="num green">'+streak+'</div><div class="lbl">连续天数</div><div class="sub">当前</div></div>'+
+    '<div class="stats-card"><div class="num">'+dt+'</div><div class="lbl">训练天数</div><div class="sub">累计</div></div>'+
+    '<div class="stats-card"><div class="num orange">'+ws+'/7</div><div class="lbl">本周训练</div><div class="sub">'+Math.round(ws/7*100)+'%</div></div>';
+}
+function calcStreak(){
+  var streak=0,d=new Date();
+  for(var i=0;i<365;i++){
+    var ds=d.toDateString(),found=false;
+    for(var li=0;li<state.trainingLog.length;li++){if(state.trainingLog[li].date===ds){found=true;break}}
+    if(found)streak++;else if(i>0)break;
+    d.setDate(d.getDate()-1);
+  }
+  return streak;
+}
+
+function renderLevelProgressBars(){
+  var el=document.getElementById("levelProgressCards");if(!el)return;
+  var html='<div class="stats-grid">';
+  for(var lv=0;lv<=2;lv++){
+    var stages=Object.keys(DATA[String(lv)].stages),done=0;
+    for(var si=0;si<stages.length;si++){var sc=state.completed[stages[si]];if(sc&&sc.done)done++}
+    var pct=Math.round(done/stages.length*100);
+    html+='<div class="stats-card"><div class="num '+(pct>=100?"green":"")+'">'+done+"/"+stages.length+'</div>'+
+      '<div class="lbl">等级'+lv+'</div>'+
+      '<div class="level-progress-bar"><div class="level-progress-fill '+(pct>=100?"complete":"")+'" style="width:'+pct+'%"></div></div>'+
+      '<div class="sub">'+pct+'%</div></div>';
+  }
+  el.innerHTML=html+'</div>';
+}
+
+function renderTrainingLog(){
+  var el=document.getElementById("trainingLog");if(!el)return;
+  if(state.trainingLog.length===0){el.innerHTML='<div class="log-empty">还没有训练记录\n完成一次训练后会出现这里</div>';return}
+  var entries=state.trainingLog.slice(-50).reverse(),html="";
+  for(var i=0;i<entries.length;i++){var e=entries[i];
+    html+='<div class="log-item"><div class="left"><span class="date">'+e.date+" "+e.time+'</span><span class="stage-name">'+e.stageName+'</span></div><div class="badge">等级'+e.level+'</div></div>'}
+  el.innerHTML=html;
+}
+
+// ===== PLAN SYSTEM =====
+function openPlanModal() {
+  document.getElementById("planModal").classList.add("show");
+}
+function closePlanModal() {
+  document.getElementById("planModal").classList.remove("show");
+}
+
+function generatePlan(durationMonths) {
+  var allStages = [];
+  for (var lv = 0; lv <= 2; lv++) {
+    var keys = Object.keys(DATA[String(lv)].stages);
+    for (var ki = 0; ki < keys.length; ki++) {
+      allStages.push(keys[ki]);
     }
-    d.setDate(d.getDate() - 1);
   }
-  var stageComplete = sc && sc.done;
-  var dots = "";
-  for (var di = 0; di < 7; di++) {
-    var dotCls = "upgrade-dot";
-    if (di < recentSessions) dotCls += " done";
-    if (di === recentSessions && !stageComplete) dotCls += " today";
-    dots += '<div class="' + dotCls + '"></div>';
+  var startIdx = 0;
+  for (var i = 0; i < allStages.length; i++) {
+    var sid = allStages[i];
+    var c = state.completed[sid];
+    if (!c || !c.done) { startIdx = i; break; }
   }
-  el.innerHTML = "<h3>" + (stageComplete ? "\u9636\u6bb5\u5df2\u5b8c\u6210" : "\u5347\u7ea7\u6761\u4ef6") + "</h3>" +
-    '<p class="' + (stageComplete ? "upgrade-done" : "") + '">' + stageData.upgrade + (stageComplete ? " \u2705" : "") + "</p>" +
-    (!stageComplete ? '<div class="upgrade-progress">' + dots + '</div><div style="font-size:12px;color:var(--text3);margin-top:4px">\u672c\u5468\u8bad\u7ec3: ' + recentSessions + "/7\u5929</div>" : "");
+  var remainingStages = allStages.slice(startIdx);
+  if (remainingStages.length === 0) remainingStages = [allStages[allStages.length - 1]];
+  var totalWeeks = durationMonths === 3 ? remainingStages.length : remainingStages.length * 2;
+  if (totalWeeks < remainingStages.length) totalWeeks = remainingStages.length;
+  var weeks = [];
+  var weeksPerStage = Math.max(1, Math.floor(totalWeeks / remainingStages.length));
+  var extraWeeks = totalWeeks % remainingStages.length;
+  var wn = 1;
+  for (var i = 0; i < remainingStages.length; i++) {
+    var w = weeksPerStage + (i < extraWeeks ? 1 : 0);
+    for (var j = 0; j < w; j++) {
+      weeks.push({ week: wn++, stage: remainingStages[i], status: "pending" });
+    }
+  }
+  return weeks;
 }
 
-// ===== ENHANCED TIMER =====
-function addTimerVisualBar() {
-  var area = document.querySelector(".timer-area");
-  if (!area) return;
-  var existing = area.querySelector(".timer-visual");
-  if (existing) return;
-  var v = document.createElement("div");
-  v.className = "timer-visual";
-  v.innerHTML = '<div class="timer-visual-fill" id="timerVisualFill"></div>';
-  var sub = area.querySelector(".timer-sub");
-  if (sub) area.insertBefore(v, sub);
-  else area.appendChild(v);
+function computePlanProgress() {
+  if (!state.plan || !state.plan.weeks) return { done: 0, total: 0, pct: 0, weekIdx: 0 };
+  var weeks = state.plan.weeks;
+  var done = 0, weekIdx = 0;
+  for (var i = 0; i < weeks.length; i++) {
+    if (weeks[i].status === "done") { done++; weekIdx = i + 1; }
+    else { weekIdx = i; break; }
+  }
+  if (done === weeks.length) weekIdx = weeks.length;
+  var pct = Math.round(done / weeks.length * 100);
+  return { done: done, total: weeks.length, pct: pct, weekIdx: weekIdx };
 }
 
-// Patch startTimer to add visual bar
-var _origST = startTimer;
-startTimer = function(ex) {
-  addTimerVisualBar();
-  _origST(ex);
-};
+function createPlan() {
+  var dur = parseInt(document.getElementById("planDuration").value);
+  var weeks = generatePlan(dur);
+  state.plan = { duration: dur, createdDate: new Date().toISOString(), weeks: weeks };
+  saveState();
+  closePlanModal();
+  toast("训练计划已生成，共 " + weeks.length + " 周");
+  renderPlanView();
+  render();
+}
 
-// Patch updateDisplay to update visual bar
-var _origUD = updateDisplay;
-updateDisplay = function(s, ex) {
-  _origUD(s, ex);
-  var vf = document.getElementById("timerVisualFill");
-  if (vf && ex && ex.holdSec) {
-    var pct = Math.min(100, s / ex.holdSec[1] * 100);
-    vf.style.width = pct + "%";
-  }
-};
+function deletePlan() {
+  if (!confirm("确定要删除当前训练计划吗？")) return;
+  state.plan = null;
+  saveState();
+  renderPlanView();
+  render();
+  toast("计划已删除");
+}
 
-// Patch toast to force show
-var _origToast = toast;
-toast = function(msg) {
-  var el = document.getElementById("toast");
+function markWeekDone(weekIdx) {
+  if (!state.plan || !state.plan.weeks) return;
+  var w = state.plan.weeks[weekIdx];
+  if (!w || w.status === "done") return;
+  w.status = "done";
+  saveState();
+  renderPlanView();
+  render();
+}
+
+function renderPlanView() {
+  var el = document.getElementById("planView");
   if (!el) return;
-  el.textContent = msg;
-  el.classList.add("show");
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(function() { el.classList.remove("show"); }, 2000);
-};
+  if (!state.plan || !state.plan.weeks) {
+    document.getElementById("planEmpty").style.display = "block";
+    document.getElementById("planContent").style.display = "none";
+    return;
+  }
+  document.getElementById("planEmpty").style.display = "none";
+  document.getElementById("planContent").style.display = "block";
+  var prog = computePlanProgress();
+  var weeks = state.plan.weeks;
+  var durLabel = state.plan.duration === 3 ? "3个月" : "6个月";
+  var hdr = document.getElementById("planHeader");
+  hdr.innerHTML = '<div class="plan-header-left"><div class="plan-header-title">' + durLabel + '训练计划</div><div class="plan-header-sub">创建于 ' + new Date(state.plan.createdDate).toLocaleDateString() + '</div><div class="plan-progress-bar"><div class="plan-progress-fill" style="width:' + prog.pct + '%"></div></div></div><div class="plan-header-pct">' + prog.pct + '%</div>';
+  var list = document.getElementById("planWeekList");
+  var html = "";
+  for (var i = 0; i < weeks.length; i++) {
+    var w = weeks[i];
+    var sid = w.stage;
+    var lvNum = -1, stageData = null;
+    for (var lv = 0; lv <= 2; lv++) {
+      if (DATA[String(lv)].stages[sid]) { lvNum = lv; stageData = DATA[String(lv)].stages[sid]; break; }
+    }
+    var sname = stageData ? stageData.name : sid;
+    var cls = "plan-week-item";
+    var statusCls = "pending";
+    var statusLabel = "待开始";
+    if (w.status === "done") { cls += " completed"; statusCls = "done"; statusLabel = "\u2713 已完成"; }
+    else if (i === prog.weekIdx && prog.weekIdx < prog.total) { cls += " current"; statusCls = "active"; statusLabel = "当前周"; }
+    html += '<div class="' + cls + '"><div class="plan-week-num">第' + w.week + '周</div><div class="plan-week-stage">' + sname + '<div class="sname">等级' + lvNum + '</div></div><div class="plan-week-status ' + statusCls + '">' + statusLabel + '</div></div>';
+  }
+  list.innerHTML = html;
+  var actionsHtml = '<button class="btn btn-secondary" style="flex:0;padding:10px 18px;font-size:13px;border:1px solid var(--bg3);color:var(--text3)" onclick="deletePlan()">删除计划</button>';
+  if (prog.weekIdx < prog.total && prog.weekIdx >= 0 && weeks.length > 0) {
+    actionsHtml += '<button class="btn btn-primary" onclick="markWeekDone(' + prog.weekIdx + ')" style="flex:0;padding:10px 18px;font-size:13px">标记第' + (prog.weekIdx + 1) + '周完成</button>';
+  }
+  document.getElementById("planActions").innerHTML = actionsHtml;
+}
 
-// ===== PATCH RENDER =====
+// Patch render to include plan/daily plan/progress
 var _origR = render;
 render = function() {
   _origR();
   renderDailyPlan();
   renderProgressLevels();
-  renderUpgradeEnhanced();
+  if (currentView === "plan") renderPlanView();
 };
-
-// Re-trigger render to apply patches
 render();
 
 // ===== SERVICE WORKER REGISTRATION =====
